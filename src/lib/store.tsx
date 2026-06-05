@@ -6,16 +6,18 @@ export type Medicine = {
   dosage: string;
   startDate: string;
   endDate: string;
-  times: string[]; // ["08:00", "20:00"]
+  times: string[];
   notes?: string;
   color?: string;
+  stock?: number;
+  lowStockThreshold?: number;
 };
 
 export type DoseLog = {
   id: string;
   medicineId: string;
-  date: string; // YYYY-MM-DD
-  time: string; // HH:mm
+  date: string;
+  time: string;
   status: "taken" | "missed" | "pending";
   takenAt?: string;
 };
@@ -38,6 +40,31 @@ export type Profile = {
   allergies?: string;
   conditions?: string;
   avatarUrl?: string;
+  emergencyPhone?: string;
+  address?: string;
+};
+
+export type Prescription = {
+  id: string;
+  title: string;
+  doctor: string;
+  date: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  dataUrl: string;
+  notes?: string;
+};
+
+export type Appointment = {
+  id: string;
+  doctor: string;
+  specialty: string;
+  date: string;
+  time: string;
+  location?: string;
+  notes?: string;
+  status: "upcoming" | "completed" | "cancelled";
 };
 
 type Store = {
@@ -45,6 +72,8 @@ type Store = {
   logs: DoseLog[];
   caregivers: Caregiver[];
   profile: Profile;
+  prescriptions: Prescription[];
+  appointments: Appointment[];
   isAuthed: boolean;
   addMedicine: (m: Omit<Medicine, "id">) => void;
   updateMedicine: (id: string, m: Partial<Medicine>) => void;
@@ -53,6 +82,12 @@ type Store = {
   addCaregiver: (c: Omit<Caregiver, "id">) => void;
   deleteCaregiver: (id: string) => void;
   updateProfile: (p: Partial<Profile>) => void;
+  addPrescription: (p: Omit<Prescription, "id">) => void;
+  deletePrescription: (id: string) => void;
+  addAppointment: (a: Omit<Appointment, "id">) => void;
+  updateAppointment: (id: string, a: Partial<Appointment>) => void;
+  deleteAppointment: (id: string) => void;
+  refillMedicine: (id: string, amount: number) => void;
   login: () => void;
   logout: () => void;
 };
@@ -66,36 +101,9 @@ const inDays = (n: number) => {
 
 const defaultState = {
   medicines: [
-    {
-      id: "m1",
-      name: "Metformin",
-      dosage: "500 mg",
-      startDate: inDays(-10),
-      endDate: inDays(30),
-      times: ["08:00", "20:00"],
-      notes: "Take with meals",
-      color: "chart-1",
-    },
-    {
-      id: "m2",
-      name: "Vitamin D3",
-      dosage: "1000 IU",
-      startDate: inDays(-30),
-      endDate: inDays(60),
-      times: ["09:00"],
-      notes: "Once daily after breakfast",
-      color: "chart-3",
-    },
-    {
-      id: "m3",
-      name: "Atorvastatin",
-      dosage: "10 mg",
-      startDate: inDays(-5),
-      endDate: inDays(90),
-      times: ["21:00"],
-      notes: "At bedtime",
-      color: "chart-2",
-    },
+    { id: "m1", name: "Metformin", dosage: "500 mg", startDate: inDays(-10), endDate: inDays(30), times: ["08:00", "20:00"], notes: "Take with meals", color: "chart-1", stock: 14, lowStockThreshold: 10 },
+    { id: "m2", name: "Vitamin D3", dosage: "1000 IU", startDate: inDays(-30), endDate: inDays(60), times: ["09:00"], notes: "Once daily after breakfast", color: "chart-3", stock: 42, lowStockThreshold: 7 },
+    { id: "m3", name: "Atorvastatin", dosage: "10 mg", startDate: inDays(-5), endDate: inDays(90), times: ["21:00"], notes: "At bedtime", color: "chart-2", stock: 6, lowStockThreshold: 10 },
   ] as Medicine[],
   logs: [
     { id: "l1", medicineId: "m1", date: today, time: "08:00", status: "taken", takenAt: new Date().toISOString() },
@@ -117,12 +125,20 @@ const defaultState = {
     bloodGroup: "O+",
     allergies: "Penicillin",
     conditions: "Type 2 Diabetes, High Cholesterol",
+    emergencyPhone: "+1 555-0142",
+    address: "1280 Oak Street, Portland, OR",
   } as Profile,
+  prescriptions: [
+    { id: "p1", title: "Diabetes follow-up Rx", doctor: "Dr. Robert Lee", date: inDays(-10), fileName: "rx-diabetes.pdf", fileType: "application/pdf", fileSize: 124000, dataUrl: "", notes: "Continue metformin 500mg BD" },
+  ] as Prescription[],
+  appointments: [
+    { id: "a1", doctor: "Dr. Robert Lee", specialty: "General Physician", date: inDays(3), time: "10:30", location: "Bayside Clinic, Room 204", notes: "Quarterly check-up", status: "upcoming" as const },
+    { id: "a2", doctor: "Dr. Priya Patel", specialty: "Endocrinologist", date: inDays(-14), time: "14:00", location: "Metro Medical Center", status: "completed" as const },
+  ] as Appointment[],
 };
 
 const StoreCtx = createContext<Store | null>(null);
-
-const KEY = "medialert-store-v1";
+const KEY = "medialert-store-v2";
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
@@ -130,6 +146,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [logs, setLogs] = useState<DoseLog[]>(defaultState.logs);
   const [caregivers, setCaregivers] = useState<Caregiver[]>(defaultState.caregivers);
   const [profile, setProfile] = useState<Profile>(defaultState.profile);
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>(defaultState.prescriptions);
+  const [appointments, setAppointments] = useState<Appointment[]>(defaultState.appointments);
   const [isAuthed, setIsAuthed] = useState(false);
 
   useEffect(() => {
@@ -141,6 +159,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (s.logs) setLogs(s.logs);
         if (s.caregivers) setCaregivers(s.caregivers);
         if (s.profile) setProfile(s.profile);
+        if (s.prescriptions) setPrescriptions(s.prescriptions);
+        if (s.appointments) setAppointments(s.appointments);
         if (typeof s.isAuthed === "boolean") setIsAuthed(s.isAuthed);
       }
     } catch {}
@@ -149,14 +169,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
-    localStorage.setItem(KEY, JSON.stringify({ medicines, logs, caregivers, profile, isAuthed }));
-  }, [medicines, logs, caregivers, profile, isAuthed, hydrated]);
+    localStorage.setItem(KEY, JSON.stringify({ medicines, logs, caregivers, profile, prescriptions, appointments, isAuthed }));
+  }, [medicines, logs, caregivers, profile, prescriptions, appointments, isAuthed, hydrated]);
 
   const value: Store = {
     medicines,
     logs,
     caregivers,
     profile,
+    prescriptions,
+    appointments,
     isAuthed,
     addMedicine: (m) => setMedicines((p) => [...p, { ...m, id: crypto.randomUUID() }]),
     updateMedicine: (id, m) =>
@@ -168,20 +190,27 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setDoseStatus: (medicineId, date, time, status) => {
       setLogs((prev) => {
         const idx = prev.findIndex((l) => l.medicineId === medicineId && l.date === date && l.time === time);
-        if (idx >= 0) {
-          const next = [...prev];
-          next[idx] = { ...next[idx], status, takenAt: status === "taken" ? new Date().toISOString() : undefined };
-          return next;
+        const prevStatus = idx >= 0 ? prev[idx].status : null;
+        const next = idx >= 0
+          ? prev.map((l, i) => i === idx ? { ...l, status, takenAt: status === "taken" ? new Date().toISOString() : undefined } : l)
+          : [...prev, { id: crypto.randomUUID(), medicineId, date, time, status, takenAt: status === "taken" ? new Date().toISOString() : undefined }];
+        // decrement stock on transition to taken
+        if (status === "taken" && prevStatus !== "taken") {
+          setMedicines((meds) => meds.map((m) => m.id === medicineId && typeof m.stock === "number" ? { ...m, stock: Math.max(0, m.stock - 1) } : m));
         }
-        return [
-          ...prev,
-          { id: crypto.randomUUID(), medicineId, date, time, status, takenAt: status === "taken" ? new Date().toISOString() : undefined },
-        ];
+        return next;
       });
     },
     addCaregiver: (c) => setCaregivers((p) => [...p, { ...c, id: crypto.randomUUID() }]),
     deleteCaregiver: (id) => setCaregivers((p) => p.filter((x) => x.id !== id)),
     updateProfile: (p) => setProfile((prev) => ({ ...prev, ...p })),
+    addPrescription: (p) => setPrescriptions((prev) => [{ ...p, id: crypto.randomUUID() }, ...prev]),
+    deletePrescription: (id) => setPrescriptions((p) => p.filter((x) => x.id !== id)),
+    addAppointment: (a) => setAppointments((p) => [...p, { ...a, id: crypto.randomUUID() }]),
+    updateAppointment: (id, a) => setAppointments((p) => p.map((x) => (x.id === id ? { ...x, ...a } : x))),
+    deleteAppointment: (id) => setAppointments((p) => p.filter((x) => x.id !== id)),
+    refillMedicine: (id, amount) =>
+      setMedicines((p) => p.map((x) => (x.id === id ? { ...x, stock: (x.stock ?? 0) + amount } : x))),
     login: () => setIsAuthed(true),
     logout: () => setIsAuthed(false),
   };
@@ -198,7 +227,6 @@ export function useStore() {
 export function getDoseStatus(logs: DoseLog[], medicineId: string, date: string, time: string): DoseLog["status"] {
   const log = logs.find((l) => l.medicineId === medicineId && l.date === date && l.time === time);
   if (log) return log.status;
-  // infer: if datetime in the past => missed, else pending
   const dt = new Date(`${date}T${time}:00`);
   return dt.getTime() < Date.now() ? "missed" : "pending";
 }
