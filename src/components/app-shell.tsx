@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu } from "lucide-react";
+import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu, Package, FileText, Calendar, BarChart3, LifeBuoy } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -10,8 +10,13 @@ const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/medicines", label: "Medicines", icon: Pill },
   { to: "/reminders", label: "Reminders", icon: Bell },
+  { to: "/stock", label: "Stock", icon: Package },
+  { to: "/prescriptions", label: "Prescriptions", icon: FileText },
+  { to: "/appointments", label: "Appointments", icon: Calendar },
+  { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/history", label: "History", icon: History },
   { to: "/caregivers", label: "Caregivers", icon: Users },
+  { to: "/emergency", label: "Emergency", icon: LifeBuoy },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 

@@ -9,17 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StockRouteImport } from './routes/stock'
 import { Route as RemindersRouteImport } from './routes/reminders'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrescriptionsRouteImport } from './routes/prescriptions'
 import { Route as MedicinesRouteImport } from './routes/medicines'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CaregiversRouteImport } from './routes/caregivers'
+import { Route as AppointmentsRouteImport } from './routes/appointments'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 
+const StockRoute = StockRouteImport.update({
+  id: '/stock',
+  path: '/stock',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RemindersRoute = RemindersRouteImport.update({
   id: '/reminders',
   path: '/reminders',
@@ -33,6 +43,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrescriptionsRoute = PrescriptionsRouteImport.update({
+  id: '/prescriptions',
+  path: '/prescriptions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MedicinesRoute = MedicinesRouteImport.update({
@@ -55,6 +70,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmergencyRoute = EmergencyRouteImport.update({
+  id: '/emergency',
+  path: '/emergency',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -65,6 +85,16 @@ const CaregiversRoute = CaregiversRouteImport.update({
   path: '/caregivers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppointmentsRoute = AppointmentsRouteImport.update({
+  id: '/appointments',
+  path: '/appointments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -73,95 +103,137 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/appointments': typeof AppointmentsRoute
   '/caregivers': typeof CaregiversRoute
   '/dashboard': typeof DashboardRoute
+  '/emergency': typeof EmergencyRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
+  '/prescriptions': typeof PrescriptionsRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
+  '/stock': typeof StockRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/appointments': typeof AppointmentsRoute
   '/caregivers': typeof CaregiversRoute
   '/dashboard': typeof DashboardRoute
+  '/emergency': typeof EmergencyRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
+  '/prescriptions': typeof PrescriptionsRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
+  '/stock': typeof StockRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/appointments': typeof AppointmentsRoute
   '/caregivers': typeof CaregiversRoute
   '/dashboard': typeof DashboardRoute
+  '/emergency': typeof EmergencyRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
+  '/prescriptions': typeof PrescriptionsRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
+  '/stock': typeof StockRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/analytics'
+    | '/appointments'
     | '/caregivers'
     | '/dashboard'
+    | '/emergency'
     | '/forgot-password'
     | '/history'
     | '/login'
     | '/medicines'
+    | '/prescriptions'
     | '/profile'
     | '/register'
     | '/reminders'
+    | '/stock'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/analytics'
+    | '/appointments'
     | '/caregivers'
     | '/dashboard'
+    | '/emergency'
     | '/forgot-password'
     | '/history'
     | '/login'
     | '/medicines'
+    | '/prescriptions'
     | '/profile'
     | '/register'
     | '/reminders'
+    | '/stock'
   id:
     | '__root__'
     | '/'
+    | '/analytics'
+    | '/appointments'
     | '/caregivers'
     | '/dashboard'
+    | '/emergency'
     | '/forgot-password'
     | '/history'
     | '/login'
     | '/medicines'
+    | '/prescriptions'
     | '/profile'
     | '/register'
     | '/reminders'
+    | '/stock'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  AppointmentsRoute: typeof AppointmentsRoute
   CaregiversRoute: typeof CaregiversRoute
   DashboardRoute: typeof DashboardRoute
+  EmergencyRoute: typeof EmergencyRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HistoryRoute: typeof HistoryRoute
   LoginRoute: typeof LoginRoute
   MedicinesRoute: typeof MedicinesRoute
+  PrescriptionsRoute: typeof PrescriptionsRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   RemindersRoute: typeof RemindersRoute
+  StockRoute: typeof StockRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/stock': {
+      id: '/stock'
+      path: '/stock'
+      fullPath: '/stock'
+      preLoaderRoute: typeof StockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reminders': {
       id: '/reminders'
       path: '/reminders'
@@ -181,6 +253,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prescriptions': {
+      id: '/prescriptions'
+      path: '/prescriptions'
+      fullPath: '/prescriptions'
+      preLoaderRoute: typeof PrescriptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/medicines': {
@@ -211,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/emergency': {
+      id: '/emergency'
+      path: '/emergency'
+      fullPath: '/emergency'
+      preLoaderRoute: typeof EmergencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -225,6 +311,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CaregiversRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/appointments': {
+      id: '/appointments'
+      path: '/appointments'
+      fullPath: '/appointments'
+      preLoaderRoute: typeof AppointmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -237,15 +337,20 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  AppointmentsRoute: AppointmentsRoute,
   CaregiversRoute: CaregiversRoute,
   DashboardRoute: DashboardRoute,
+  EmergencyRoute: EmergencyRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HistoryRoute: HistoryRoute,
   LoginRoute: LoginRoute,
   MedicinesRoute: MedicinesRoute,
+  PrescriptionsRoute: PrescriptionsRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   RemindersRoute: RemindersRoute,
+  StockRoute: StockRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
