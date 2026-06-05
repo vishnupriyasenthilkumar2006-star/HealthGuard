@@ -13,6 +13,7 @@ import { Route as StockRouteImport } from './routes/stock'
 import { Route as RemindersRouteImport } from './routes/reminders'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrescriptionsRouteImport } from './routes/prescriptions'
 import { Route as MedicinesRouteImport } from './routes/medicines'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoryRouteImport } from './routes/history'
@@ -39,6 +40,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrescriptionsRoute = PrescriptionsRouteImport.update({
+  id: '/prescriptions',
+  path: '/prescriptions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MedicinesRoute = MedicinesRouteImport.update({
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
+  '/prescriptions': typeof PrescriptionsRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
+  '/prescriptions': typeof PrescriptionsRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
+  '/prescriptions': typeof PrescriptionsRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/login'
     | '/medicines'
+    | '/prescriptions'
     | '/profile'
     | '/register'
     | '/reminders'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/login'
     | '/medicines'
+    | '/prescriptions'
     | '/profile'
     | '/register'
     | '/reminders'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/login'
     | '/medicines'
+    | '/prescriptions'
     | '/profile'
     | '/register'
     | '/reminders'
@@ -167,6 +179,7 @@ export interface RootRouteChildren {
   HistoryRoute: typeof HistoryRoute
   LoginRoute: typeof LoginRoute
   MedicinesRoute: typeof MedicinesRoute
+  PrescriptionsRoute: typeof PrescriptionsRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   RemindersRoute: typeof RemindersRoute
@@ -201,6 +214,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prescriptions': {
+      id: '/prescriptions'
+      path: '/prescriptions'
+      fullPath: '/prescriptions'
+      preLoaderRoute: typeof PrescriptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/medicines': {
@@ -263,6 +283,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoryRoute: HistoryRoute,
   LoginRoute: LoginRoute,
   MedicinesRoute: MedicinesRoute,
+  PrescriptionsRoute: PrescriptionsRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   RemindersRoute: RemindersRoute,
