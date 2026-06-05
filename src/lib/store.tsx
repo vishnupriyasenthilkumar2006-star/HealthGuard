@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
+export type AlarmSound = "chime" | "beep" | "bell" | "gentle" | "urgent";
+
 export type Medicine = {
   id: string;
   name: string;
@@ -11,6 +13,8 @@ export type Medicine = {
   color?: string;
   stock?: number;
   lowStockThreshold?: number;
+  alarmSound?: AlarmSound;
+  critical?: boolean;
 };
 
 export type DoseLog = {
@@ -20,6 +24,8 @@ export type DoseLog = {
   time: string;
   status: "taken" | "missed" | "pending";
   takenAt?: string;
+  snoozedUntil?: string; // ISO timestamp
+  acknowledged?: boolean; // user has interacted with this alarm
 };
 
 export type Caregiver = {
@@ -67,6 +73,16 @@ export type Appointment = {
   status: "upcoming" | "completed" | "cancelled";
 };
 
+export type AlarmSettings = {
+  soundEnabled: boolean;
+  volume: number; // 0..1
+  defaultSound: AlarmSound;
+  defaultSnoozeMinutes: 5 | 10 | 15;
+  repeatMinutes: number; // re-alarm if unresponsive
+  notifyCaregivers: boolean;
+  browserNotifications: boolean;
+};
+
 type Store = {
   medicines: Medicine[];
   logs: DoseLog[];
@@ -74,11 +90,14 @@ type Store = {
   profile: Profile;
   prescriptions: Prescription[];
   appointments: Appointment[];
+  alarmSettings: AlarmSettings;
   isAuthed: boolean;
   addMedicine: (m: Omit<Medicine, "id">) => void;
   updateMedicine: (id: string, m: Partial<Medicine>) => void;
   deleteMedicine: (id: string) => void;
   setDoseStatus: (medicineId: string, date: string, time: string, status: DoseLog["status"]) => void;
+  snoozeDose: (medicineId: string, date: string, time: string, minutes: number) => void;
+  acknowledgeDose: (medicineId: string, date: string, time: string) => void;
   addCaregiver: (c: Omit<Caregiver, "id">) => void;
   deleteCaregiver: (id: string) => void;
   updateProfile: (p: Partial<Profile>) => void;
@@ -88,6 +107,7 @@ type Store = {
   updateAppointment: (id: string, a: Partial<Appointment>) => void;
   deleteAppointment: (id: string) => void;
   refillMedicine: (id: string, amount: number) => void;
+  updateAlarmSettings: (s: Partial<AlarmSettings>) => void;
   login: () => void;
   logout: () => void;
 };
@@ -99,11 +119,21 @@ const inDays = (n: number) => {
   return d.toISOString().slice(0, 10);
 };
 
+const defaultAlarmSettings: AlarmSettings = {
+  soundEnabled: true,
+  volume: 0.7,
+  defaultSound: "chime",
+  defaultSnoozeMinutes: 10,
+  repeatMinutes: 2,
+  notifyCaregivers: true,
+  browserNotifications: true,
+};
+
 const defaultState = {
   medicines: [
-    { id: "m1", name: "Metformin", dosage: "500 mg", startDate: inDays(-10), endDate: inDays(30), times: ["08:00", "20:00"], notes: "Take with meals", color: "chart-1", stock: 14, lowStockThreshold: 10 },
-    { id: "m2", name: "Vitamin D3", dosage: "1000 IU", startDate: inDays(-30), endDate: inDays(60), times: ["09:00"], notes: "Once daily after breakfast", color: "chart-3", stock: 42, lowStockThreshold: 7 },
-    { id: "m3", name: "Atorvastatin", dosage: "10 mg", startDate: inDays(-5), endDate: inDays(90), times: ["21:00"], notes: "At bedtime", color: "chart-2", stock: 6, lowStockThreshold: 10 },
+    { id: "m1", name: "Metformin", dosage: "500 mg", startDate: inDays(-10), endDate: inDays(30), times: ["08:00", "20:00"], notes: "Take with meals", color: "chart-1", stock: 14, lowStockThreshold: 10, alarmSound: "chime" as AlarmSound, critical: false },
+    { id: "m2", name: "Vitamin D3", dosage: "1000 IU", startDate: inDays(-30), endDate: inDays(60), times: ["09:00"], notes: "Once daily after breakfast", color: "chart-3", stock: 42, lowStockThreshold: 7, alarmSound: "gentle" as AlarmSound, critical: false },
+    { id: "m3", name: "Atorvastatin", dosage: "10 mg", startDate: inDays(-5), endDate: inDays(90), times: ["21:00"], notes: "At bedtime", color: "chart-2", stock: 6, lowStockThreshold: 10, alarmSound: "urgent" as AlarmSound, critical: true },
   ] as Medicine[],
   logs: [
     { id: "l1", medicineId: "m1", date: today, time: "08:00", status: "taken", takenAt: new Date().toISOString() },
@@ -138,7 +168,7 @@ const defaultState = {
 };
 
 const StoreCtx = createContext<Store | null>(null);
-const KEY = "medialert-store-v2";
+const KEY = "medialert-store-v3";
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
@@ -148,6 +178,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile>(defaultState.profile);
   const [prescriptions, setPrescriptions] = useState<Prescription[]>(defaultState.prescriptions);
   const [appointments, setAppointments] = useState<Appointment[]>(defaultState.appointments);
+  const [alarmSettings, setAlarmSettings] = useState<AlarmSettings>(defaultAlarmSettings);
   const [isAuthed, setIsAuthed] = useState(false);
 
   useEffect(() => {
@@ -161,6 +192,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (s.profile) setProfile(s.profile);
         if (s.prescriptions) setPrescriptions(s.prescriptions);
         if (s.appointments) setAppointments(s.appointments);
+        if (s.alarmSettings) setAlarmSettings({ ...defaultAlarmSettings, ...s.alarmSettings });
         if (typeof s.isAuthed === "boolean") setIsAuthed(s.isAuthed);
       }
     } catch {}
@@ -169,8 +201,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
-    localStorage.setItem(KEY, JSON.stringify({ medicines, logs, caregivers, profile, prescriptions, appointments, isAuthed }));
-  }, [medicines, logs, caregivers, profile, prescriptions, appointments, isAuthed, hydrated]);
+    localStorage.setItem(KEY, JSON.stringify({ medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed }));
+  }, [medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, hydrated]);
+
+  const upsertLog = (medicineId: string, date: string, time: string, patch: Partial<DoseLog>) => {
+    setLogs((prev) => {
+      const idx = prev.findIndex((l) => l.medicineId === medicineId && l.date === date && l.time === time);
+      if (idx >= 0) return prev.map((l, i) => (i === idx ? { ...l, ...patch } : l));
+      return [...prev, { id: crypto.randomUUID(), medicineId, date, time, status: "pending", ...patch }];
+    });
+  };
 
   const value: Store = {
     medicines,
@@ -179,6 +219,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     profile,
     prescriptions,
     appointments,
+    alarmSettings,
     isAuthed,
     addMedicine: (m) => setMedicines((p) => [...p, { ...m, id: crypto.randomUUID() }]),
     updateMedicine: (id, m) =>
@@ -191,15 +232,27 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setLogs((prev) => {
         const idx = prev.findIndex((l) => l.medicineId === medicineId && l.date === date && l.time === time);
         const prevStatus = idx >= 0 ? prev[idx].status : null;
+        const patch: Partial<DoseLog> = {
+          status,
+          acknowledged: true,
+          snoozedUntil: undefined,
+          takenAt: status === "taken" ? new Date().toISOString() : undefined,
+        };
         const next = idx >= 0
-          ? prev.map((l, i) => i === idx ? { ...l, status, takenAt: status === "taken" ? new Date().toISOString() : undefined } : l)
-          : [...prev, { id: crypto.randomUUID(), medicineId, date, time, status, takenAt: status === "taken" ? new Date().toISOString() : undefined }];
-        // decrement stock on transition to taken
+          ? prev.map((l, i) => (i === idx ? { ...l, ...patch } : l))
+          : [...prev, { id: crypto.randomUUID(), medicineId, date, time, status, ...patch } as DoseLog];
         if (status === "taken" && prevStatus !== "taken") {
           setMedicines((meds) => meds.map((m) => m.id === medicineId && typeof m.stock === "number" ? { ...m, stock: Math.max(0, m.stock - 1) } : m));
         }
         return next;
       });
+    },
+    snoozeDose: (medicineId, date, time, minutes) => {
+      const until = new Date(Date.now() + minutes * 60_000).toISOString();
+      upsertLog(medicineId, date, time, { status: "pending", snoozedUntil: until, acknowledged: true });
+    },
+    acknowledgeDose: (medicineId, date, time) => {
+      upsertLog(medicineId, date, time, { acknowledged: true });
     },
     addCaregiver: (c) => setCaregivers((p) => [...p, { ...c, id: crypto.randomUUID() }]),
     deleteCaregiver: (id) => setCaregivers((p) => p.filter((x) => x.id !== id)),
@@ -211,6 +264,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     deleteAppointment: (id) => setAppointments((p) => p.filter((x) => x.id !== id)),
     refillMedicine: (id, amount) =>
       setMedicines((p) => p.map((x) => (x.id === id ? { ...x, stock: (x.stock ?? 0) + amount } : x))),
+    updateAlarmSettings: (s) => setAlarmSettings((prev) => ({ ...prev, ...s })),
     login: () => setIsAuthed(true),
     logout: () => setIsAuthed(false),
   };
@@ -229,4 +283,8 @@ export function getDoseStatus(logs: DoseLog[], medicineId: string, date: string,
   if (log) return log.status;
   const dt = new Date(`${date}T${time}:00`);
   return dt.getTime() < Date.now() ? "missed" : "pending";
+}
+
+export function getDoseLog(logs: DoseLog[], medicineId: string, date: string, time: string) {
+  return logs.find((l) => l.medicineId === medicineId && l.date === date && l.time === time);
 }
