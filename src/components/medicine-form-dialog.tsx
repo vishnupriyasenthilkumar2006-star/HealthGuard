@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useStore, type Medicine } from "@/lib/store";
-import { Plus, X } from "lucide-react";
+import { useStore, type Medicine, type AlarmSound } from "@/lib/store";
+import { SOUND_OPTIONS, playAlarmTone } from "@/components/alarm-manager";
+import { Plus, X, Play } from "lucide-react";
 import { toast } from "sonner";
 
 type Props = {
@@ -17,7 +20,7 @@ type Props = {
 const today = () => new Date().toISOString().slice(0, 10);
 
 export function MedicineFormDialog({ open, onOpenChange, medicine }: Props) {
-  const { addMedicine, updateMedicine } = useStore();
+  const { addMedicine, updateMedicine, alarmSettings } = useStore();
   const isEdit = !!medicine;
 
   const [name, setName] = useState("");
@@ -26,6 +29,8 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: Props) {
   const [endDate, setEndDate] = useState(today());
   const [times, setTimes] = useState<string[]>(["08:00"]);
   const [notes, setNotes] = useState("");
+  const [alarmSound, setAlarmSound] = useState<AlarmSound>("chime");
+  const [critical, setCritical] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -35,8 +40,10 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: Props) {
       setEndDate(medicine?.endDate ?? today());
       setTimes(medicine?.times ?? ["08:00"]);
       setNotes(medicine?.notes ?? "");
+      setAlarmSound(medicine?.alarmSound ?? alarmSettings.defaultSound);
+      setCritical(!!medicine?.critical);
     }
-  }, [open, medicine]);
+  }, [open, medicine, alarmSettings.defaultSound]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +51,7 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: Props) {
       toast.error("Please fill the medicine name, dosage and at least one time.");
       return;
     }
-    const payload = { name, dosage, startDate, endDate, times: times.filter(Boolean), notes };
+    const payload = { name, dosage, startDate, endDate, times: times.filter(Boolean), notes, alarmSound, critical };
     if (isEdit && medicine) {
       updateMedicine(medicine.id, payload);
       toast.success(`${name} updated.`);
@@ -57,7 +64,7 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit medicine" : "Add a medicine"}</DialogTitle>
           <DialogDescription>
@@ -106,6 +113,29 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: Props) {
               <Button type="button" variant="outline" size="sm" onClick={() => setTimes((a) => [...a, "20:00"])}>
                 <Plus className="mr-1 h-4 w-4" /> Add time
               </Button>
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label>Alarm sound</Label>
+              <div className="flex gap-2">
+                <Select value={alarmSound} onValueChange={(v) => setAlarmSound(v as AlarmSound)}>
+                  <SelectTrigger className="flex-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {SOUND_OPTIONS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Button type="button" variant="outline" size="icon" onClick={() => playAlarmTone(alarmSound, alarmSettings.volume)} aria-label="Preview sound">
+                  <Play className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Critical medication</Label>
+              <div className="flex h-9 items-center gap-3 rounded-md border px-3">
+                <Switch checked={critical} onCheckedChange={setCritical} />
+                <span className="text-sm text-muted-foreground">Alert caregivers if missed</span>
+              </div>
             </div>
           </div>
           <div className="space-y-1.5">
