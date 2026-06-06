@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export type AlarmSound = "chime" | "beep" | "bell" | "gentle" | "urgent";
 
@@ -24,8 +24,8 @@ export type DoseLog = {
   time: string;
   status: "taken" | "missed" | "pending";
   takenAt?: string;
-  snoozedUntil?: string; // ISO timestamp
-  acknowledged?: boolean; // user has interacted with this alarm
+  snoozedUntil?: string;
+  acknowledged?: boolean;
 };
 
 export type Caregiver = {
@@ -75,12 +75,57 @@ export type Appointment = {
 
 export type AlarmSettings = {
   soundEnabled: boolean;
-  volume: number; // 0..1
+  volume: number;
   defaultSound: AlarmSound;
   defaultSnoozeMinutes: 5 | 10 | 15;
-  repeatMinutes: number; // re-alarm if unresponsive
+  repeatMinutes: number;
   notifyCaregivers: boolean;
   browserNotifications: boolean;
+};
+
+export type WaterLog = { date: string; glasses: number };
+export type SleepLog = { id: string; date: string; sleepTime: string; wakeTime: string; hours: number; quality?: number };
+export type ExerciseLog = { id: string; date: string; type: string; minutes: number; steps?: number };
+export type Mood = "happy" | "normal" | "sick" | "tired";
+export type MoodLog = { date: string; mood: Mood; note?: string };
+
+export type VaultCategory = "prescription" | "lab" | "scan" | "vaccination" | "other";
+export type VaultRecord = {
+  id: string;
+  title: string;
+  category: VaultCategory;
+  date: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  dataUrl: string;
+  notes?: string;
+};
+
+export type RefillRequest = {
+  id: string;
+  medicineId: string;
+  pharmacy: string;
+  quantity: number;
+  status: "requested" | "confirmed" | "ready" | "delivered" | "cancelled";
+  requestedAt: string;
+};
+
+export type Language = "en" | "ta" | "hi" | "te" | "ml" | "kn";
+
+export type Preferences = {
+  language: Language;
+  elderlyMode: boolean;
+  voiceEnabled: boolean;
+  waterGoal: number;
+  stepGoal: number;
+  preferredPharmacy: string;
+};
+
+export type Rewards = {
+  points: number;
+  badges: string[];
+  streak: number;
 };
 
 type Store = {
@@ -92,6 +137,14 @@ type Store = {
   appointments: Appointment[];
   alarmSettings: AlarmSettings;
   isAuthed: boolean;
+  waterLogs: WaterLog[];
+  sleepLogs: SleepLog[];
+  exerciseLogs: ExerciseLog[];
+  moodLogs: MoodLog[];
+  vault: VaultRecord[];
+  refills: RefillRequest[];
+  prefs: Preferences;
+  rewards: Rewards;
   addMedicine: (m: Omit<Medicine, "id">) => void;
   updateMedicine: (id: string, m: Partial<Medicine>) => void;
   deleteMedicine: (id: string) => void;
@@ -108,6 +161,19 @@ type Store = {
   deleteAppointment: (id: string) => void;
   refillMedicine: (id: string, amount: number) => void;
   updateAlarmSettings: (s: Partial<AlarmSettings>) => void;
+  addWater: (n: number) => void;
+  setWater: (glasses: number) => void;
+  addSleep: (s: Omit<SleepLog, "id">) => void;
+  deleteSleep: (id: string) => void;
+  addExercise: (e: Omit<ExerciseLog, "id">) => void;
+  deleteExercise: (id: string) => void;
+  setMood: (mood: Mood, note?: string) => void;
+  addVault: (r: Omit<VaultRecord, "id">) => void;
+  deleteVault: (id: string) => void;
+  requestRefill: (r: Omit<RefillRequest, "id" | "requestedAt" | "status"> & { status?: RefillRequest["status"] }) => void;
+  updateRefill: (id: string, r: Partial<RefillRequest>) => void;
+  updatePrefs: (p: Partial<Preferences>) => void;
+  awardPoints: (n: number, badge?: string) => void;
   login: () => void;
   logout: () => void;
 };
@@ -127,6 +193,21 @@ const defaultAlarmSettings: AlarmSettings = {
   repeatMinutes: 2,
   notifyCaregivers: true,
   browserNotifications: true,
+};
+
+const defaultPrefs: Preferences = {
+  language: "en",
+  elderlyMode: false,
+  voiceEnabled: true,
+  waterGoal: 8,
+  stepGoal: 6000,
+  preferredPharmacy: "Bayside Pharmacy",
+};
+
+const defaultRewards: Rewards = {
+  points: 240,
+  badges: ["First Dose", "3-Day Streak", "Hydration Hero"],
+  streak: 5,
 };
 
 const defaultState = {
@@ -165,10 +246,40 @@ const defaultState = {
     { id: "a1", doctor: "Dr. Robert Lee", specialty: "General Physician", date: inDays(3), time: "10:30", location: "Bayside Clinic, Room 204", notes: "Quarterly check-up", status: "upcoming" as const },
     { id: "a2", doctor: "Dr. Priya Patel", specialty: "Endocrinologist", date: inDays(-14), time: "14:00", location: "Metro Medical Center", status: "completed" as const },
   ] as Appointment[],
+  waterLogs: [
+    { date: today, glasses: 4 },
+    { date: inDays(-1), glasses: 7 },
+    { date: inDays(-2), glasses: 6 },
+    { date: inDays(-3), glasses: 8 },
+    { date: inDays(-4), glasses: 5 },
+    { date: inDays(-5), glasses: 6 },
+    { date: inDays(-6), glasses: 7 },
+  ] as WaterLog[],
+  sleepLogs: [
+    { id: "s1", date: inDays(-1), sleepTime: "23:15", wakeTime: "06:45", hours: 7.5, quality: 4 },
+    { id: "s2", date: inDays(-2), sleepTime: "00:10", wakeTime: "07:00", hours: 6.8, quality: 3 },
+    { id: "s3", date: inDays(-3), sleepTime: "22:45", wakeTime: "06:30", hours: 7.75, quality: 5 },
+  ] as SleepLog[],
+  exerciseLogs: [
+    { id: "e1", date: today, type: "Walk", minutes: 30, steps: 3200 },
+    { id: "e2", date: inDays(-1), type: "Yoga", minutes: 20 },
+    { id: "e3", date: inDays(-2), type: "Walk", minutes: 45, steps: 4800 },
+  ] as ExerciseLog[],
+  moodLogs: [
+    { date: today, mood: "happy" as Mood },
+    { date: inDays(-1), mood: "normal" as Mood },
+    { date: inDays(-2), mood: "tired" as Mood },
+    { date: inDays(-3), mood: "happy" as Mood },
+  ] as MoodLog[],
+  vault: [
+    { id: "v1", title: "Blood Test Report", category: "lab" as VaultCategory, date: inDays(-20), fileName: "blood-test.pdf", fileType: "application/pdf", fileSize: 220000, dataUrl: "" },
+    { id: "v2", title: "Covid Vaccination Certificate", category: "vaccination" as VaultCategory, date: inDays(-200), fileName: "covid-cert.pdf", fileType: "application/pdf", fileSize: 110000, dataUrl: "" },
+  ] as VaultRecord[],
+  refills: [] as RefillRequest[],
 };
 
 const StoreCtx = createContext<Store | null>(null);
-const KEY = "medialert-store-v3";
+const KEY = "medialert-store-v4";
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
@@ -180,6 +291,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [appointments, setAppointments] = useState<Appointment[]>(defaultState.appointments);
   const [alarmSettings, setAlarmSettings] = useState<AlarmSettings>(defaultAlarmSettings);
   const [isAuthed, setIsAuthed] = useState(false);
+  const [waterLogs, setWaterLogs] = useState<WaterLog[]>(defaultState.waterLogs);
+  const [sleepLogs, setSleepLogs] = useState<SleepLog[]>(defaultState.sleepLogs);
+  const [exerciseLogs, setExerciseLogs] = useState<ExerciseLog[]>(defaultState.exerciseLogs);
+  const [moodLogs, setMoodLogs] = useState<MoodLog[]>(defaultState.moodLogs);
+  const [vault, setVault] = useState<VaultRecord[]>(defaultState.vault);
+  const [refills, setRefills] = useState<RefillRequest[]>(defaultState.refills);
+  const [prefs, setPrefs] = useState<Preferences>(defaultPrefs);
+  const [rewards, setRewards] = useState<Rewards>(defaultRewards);
 
   useEffect(() => {
     try {
@@ -194,6 +313,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (s.appointments) setAppointments(s.appointments);
         if (s.alarmSettings) setAlarmSettings({ ...defaultAlarmSettings, ...s.alarmSettings });
         if (typeof s.isAuthed === "boolean") setIsAuthed(s.isAuthed);
+        if (s.waterLogs) setWaterLogs(s.waterLogs);
+        if (s.sleepLogs) setSleepLogs(s.sleepLogs);
+        if (s.exerciseLogs) setExerciseLogs(s.exerciseLogs);
+        if (s.moodLogs) setMoodLogs(s.moodLogs);
+        if (s.vault) setVault(s.vault);
+        if (s.refills) setRefills(s.refills);
+        if (s.prefs) setPrefs({ ...defaultPrefs, ...s.prefs });
+        if (s.rewards) setRewards({ ...defaultRewards, ...s.rewards });
       }
     } catch {}
     setHydrated(true);
@@ -201,8 +328,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
-    localStorage.setItem(KEY, JSON.stringify({ medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed }));
-  }, [medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, hydrated]);
+    localStorage.setItem(KEY, JSON.stringify({ medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards }));
+  }, [medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards, hydrated]);
 
   const upsertLog = (medicineId: string, date: string, time: string, patch: Partial<DoseLog>) => {
     setLogs((prev) => {
@@ -212,18 +339,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const value: Store = {
-    medicines,
-    logs,
-    caregivers,
-    profile,
-    prescriptions,
-    appointments,
-    alarmSettings,
-    isAuthed,
+  const value: Store = useMemo(() => ({
+    medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed,
+    waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards,
     addMedicine: (m) => setMedicines((p) => [...p, { ...m, id: crypto.randomUUID() }]),
-    updateMedicine: (id, m) =>
-      setMedicines((p) => p.map((x) => (x.id === id ? { ...x, ...m } : x))),
+    updateMedicine: (id, m) => setMedicines((p) => p.map((x) => (x.id === id ? { ...x, ...m } : x))),
     deleteMedicine: (id) => {
       setMedicines((p) => p.filter((x) => x.id !== id));
       setLogs((p) => p.filter((x) => x.medicineId !== id));
@@ -233,9 +353,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const idx = prev.findIndex((l) => l.medicineId === medicineId && l.date === date && l.time === time);
         const prevStatus = idx >= 0 ? prev[idx].status : null;
         const patch: Partial<DoseLog> = {
-          status,
-          acknowledged: true,
-          snoozedUntil: undefined,
+          status, acknowledged: true, snoozedUntil: undefined,
           takenAt: status === "taken" ? new Date().toISOString() : undefined,
         };
         const next = idx >= 0
@@ -243,6 +361,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           : [...prev, { id: crypto.randomUUID(), medicineId, date, time, status, ...patch } as DoseLog];
         if (status === "taken" && prevStatus !== "taken") {
           setMedicines((meds) => meds.map((m) => m.id === medicineId && typeof m.stock === "number" ? { ...m, stock: Math.max(0, m.stock - 1) } : m));
+          setRewards((r) => ({ ...r, points: r.points + 10 }));
         }
         return next;
       });
@@ -251,9 +370,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const until = new Date(Date.now() + minutes * 60_000).toISOString();
       upsertLog(medicineId, date, time, { status: "pending", snoozedUntil: until, acknowledged: true });
     },
-    acknowledgeDose: (medicineId, date, time) => {
-      upsertLog(medicineId, date, time, { acknowledged: true });
-    },
+    acknowledgeDose: (medicineId, date, time) => upsertLog(medicineId, date, time, { acknowledged: true }),
     addCaregiver: (c) => setCaregivers((p) => [...p, { ...c, id: crypto.randomUUID() }]),
     deleteCaregiver: (id) => setCaregivers((p) => p.filter((x) => x.id !== id)),
     updateProfile: (p) => setProfile((prev) => ({ ...prev, ...p })),
@@ -262,12 +379,36 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     addAppointment: (a) => setAppointments((p) => [...p, { ...a, id: crypto.randomUUID() }]),
     updateAppointment: (id, a) => setAppointments((p) => p.map((x) => (x.id === id ? { ...x, ...a } : x))),
     deleteAppointment: (id) => setAppointments((p) => p.filter((x) => x.id !== id)),
-    refillMedicine: (id, amount) =>
-      setMedicines((p) => p.map((x) => (x.id === id ? { ...x, stock: (x.stock ?? 0) + amount } : x))),
+    refillMedicine: (id, amount) => setMedicines((p) => p.map((x) => (x.id === id ? { ...x, stock: (x.stock ?? 0) + amount } : x))),
     updateAlarmSettings: (s) => setAlarmSettings((prev) => ({ ...prev, ...s })),
+    addWater: (n) => setWaterLogs((prev) => {
+      const idx = prev.findIndex((w) => w.date === today);
+      if (idx >= 0) return prev.map((w, i) => i === idx ? { ...w, glasses: Math.max(0, w.glasses + n) } : w);
+      return [...prev, { date: today, glasses: Math.max(0, n) }];
+    }),
+    setWater: (glasses) => setWaterLogs((prev) => {
+      const idx = prev.findIndex((w) => w.date === today);
+      if (idx >= 0) return prev.map((w, i) => i === idx ? { ...w, glasses } : w);
+      return [...prev, { date: today, glasses }];
+    }),
+    addSleep: (s) => setSleepLogs((p) => [{ ...s, id: crypto.randomUUID() }, ...p]),
+    deleteSleep: (id) => setSleepLogs((p) => p.filter((x) => x.id !== id)),
+    addExercise: (e) => setExerciseLogs((p) => [{ ...e, id: crypto.randomUUID() }, ...p]),
+    deleteExercise: (id) => setExerciseLogs((p) => p.filter((x) => x.id !== id)),
+    setMood: (mood, note) => setMoodLogs((prev) => {
+      const idx = prev.findIndex((m) => m.date === today);
+      if (idx >= 0) return prev.map((m, i) => i === idx ? { ...m, mood, note } : m);
+      return [...prev, { date: today, mood, note }];
+    }),
+    addVault: (r) => setVault((p) => [{ ...r, id: crypto.randomUUID() }, ...p]),
+    deleteVault: (id) => setVault((p) => p.filter((x) => x.id !== id)),
+    requestRefill: (r) => setRefills((p) => [{ ...r, status: r.status ?? "requested", id: crypto.randomUUID(), requestedAt: new Date().toISOString() }, ...p]),
+    updateRefill: (id, r) => setRefills((p) => p.map((x) => x.id === id ? { ...x, ...r } : x)),
+    updatePrefs: (p) => setPrefs((prev) => ({ ...prev, ...p })),
+    awardPoints: (n, badge) => setRewards((r) => ({ ...r, points: r.points + n, badges: badge && !r.badges.includes(badge) ? [...r.badges, badge] : r.badges })),
     login: () => setIsAuthed(true),
     logout: () => setIsAuthed(false),
-  };
+  }), [medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards]);
 
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
 }
