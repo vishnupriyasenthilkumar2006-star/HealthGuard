@@ -157,3 +157,14 @@
 @utility shadow-elevated {
   box-shadow: var(--shadow-elevated);
 }
+
+/* Elderly mode — larger text & buttons, higher contrast */
+.elderly-mode {
+  font-size: 18px;
+}
+.elderly-mode button {
+  font-size: 1.05rem;
+}
+.elderly-mode h1, .elderly-mode h2 { letter-spacing: -0.01em; }
+.elderly-mode .text-xs { font-size: 0.95rem !important; }
+.elderly-mode .text-sm { font-size: 1rem !important; }
