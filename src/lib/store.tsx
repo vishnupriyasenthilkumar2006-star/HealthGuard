@@ -120,6 +120,12 @@ export type Preferences = {
   waterGoal: number;
   stepGoal: number;
   preferredPharmacy: string;
+  waterReminderHours: number;
+  exerciseReminderTime: string;
+  moodReminderTime: string;
+  bedtimeReminder: string;
+  wakeReminder: string;
+  wellnessRemindersEnabled: boolean;
 };
 
 export type Rewards = {
