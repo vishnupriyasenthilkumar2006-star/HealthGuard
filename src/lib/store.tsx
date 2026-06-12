@@ -208,6 +208,12 @@ const defaultPrefs: Preferences = {
   waterGoal: 8,
   stepGoal: 6000,
   preferredPharmacy: "Bayside Pharmacy",
+  waterReminderHours: 2,
+  exerciseReminderTime: "18:00",
+  moodReminderTime: "20:00",
+  bedtimeReminder: "22:30",
+  wakeReminder: "06:30",
+  wellnessRemindersEnabled: true,
 };
 
 const defaultRewards: Rewards = {
