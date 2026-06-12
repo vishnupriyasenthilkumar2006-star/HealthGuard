@@ -21,7 +21,11 @@ const COMMANDS = [
   "Open reminders",
   "Open calendar",
   "Open emergency",
-  "Add water glass",
+  "Record that I drank water",
+  "Mark exercise as completed",
+  "Show my hydration progress",
+  "How was my mood this week?",
+  "Open wellness",
   "Snooze reminder for 10 minutes",
 ];
 
