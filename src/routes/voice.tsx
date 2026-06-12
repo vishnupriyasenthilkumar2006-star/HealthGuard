@@ -21,7 +21,11 @@ const COMMANDS = [
   "Open reminders",
   "Open calendar",
   "Open emergency",
-  "Add water glass",
+  "Record that I drank water",
+  "Mark exercise as completed",
+  "Show my hydration progress",
+  "How was my mood this week?",
+  "Open wellness",
   "Snooze reminder for 10 minutes",
 ];
 
@@ -32,7 +36,7 @@ function speak(text: string) {
 }
 
 function VoicePage() {
-  const { medicines, logs, addWater } = useStore();
+  const { medicines, logs, waterLogs, moodLogs, exerciseLogs, prefs, addWater, addExercise } = useStore();
   const navigate = useNavigate();
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState("");
@@ -44,13 +48,30 @@ function VoicePage() {
     const today = new Date().toISOString().slice(0, 10);
     let r = "Sorry, I didn't catch that. Try one of the example commands.";
     if (q.includes("dashboard")) { r = "Opening dashboard"; navigate({ to: "/dashboard" }); }
-    else if (q.includes("reminder")) { r = "Opening reminders"; navigate({ to: "/reminders" }); }
+    else if (q.includes("wellness")) { r = "Opening wellness"; navigate({ to: "/wellness" }); }
+    else if (q.includes("reminder") && !q.includes("snooze") && !q.includes("bedtime")) { r = "Opening reminders"; navigate({ to: "/reminders" }); }
     else if (q.includes("calendar")) { r = "Opening calendar"; navigate({ to: "/calendar" }); }
     else if (q.includes("prescription")) { r = "Opening prescriptions"; navigate({ to: "/prescriptions" }); }
     else if (q.includes("emergency") || q.includes("sos")) { r = "Opening emergency"; navigate({ to: "/emergency" }); }
     else if (q.includes("today") && q.includes("medicine")) r = `You have ${medicines.length} medicines scheduled today: ${medicines.map((m) => m.name).join(", ")}.`;
     else if (q.includes("taken")) { const t = logs.filter((l) => l.date === today && l.status === "taken").length; r = `You have taken ${t} dose${t === 1 ? "" : "s"} today.`; }
-    else if (q.includes("water")) { addWater(1); r = "Added one glass of water."; }
+    else if (q.includes("hydration") || (q.includes("water") && (q.includes("progress") || q.includes("show")))) {
+      const g = waterLogs.find((w) => w.date === today)?.glasses ?? 0;
+      r = `You have had ${g} of ${prefs.waterGoal} glasses today.`;
+    }
+    else if (q.includes("water") || q.includes("drank")) { addWater(1); r = "Recorded one glass of water."; }
+    else if (q.includes("exercise") && (q.includes("complete") || q.includes("done") || q.includes("mark"))) {
+      addExercise({ date: today, type: "Walk", minutes: 20 });
+      r = "Exercise marked as completed.";
+    }
+    else if (q.includes("mood") && q.includes("week")) {
+      const week = moodLogs.slice(0, 7);
+      const counts: Record<string, number> = {};
+      week.forEach((m) => { counts[m.mood] = (counts[m.mood] ?? 0) + 1; });
+      const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+      r = top ? `This week you mostly felt ${top[0]}.` : "No mood entries yet this week.";
+    }
+    else if (q.includes("bedtime") || q.includes("sleep") && q.includes("remind")) { r = "Opening wellness settings to set your bedtime."; navigate({ to: "/wellness" }); }
     else if (q.includes("snooze")) r = "Reminder snoozed for ten minutes.";
     setResponse(r); speak(r);
   };

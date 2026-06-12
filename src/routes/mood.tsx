@@ -16,6 +16,7 @@ const MOODS: { key: Mood; emoji: string; label: string; color: string }[] = [
   { key: "happy", emoji: "😊", label: "Happy", color: "bg-success/15 text-success" },
   { key: "normal", emoji: "🙂", label: "Normal", color: "bg-primary/15 text-primary" },
   { key: "tired", emoji: "😴", label: "Tired", color: "bg-warning/15 text-warning" },
+  { key: "stressed", emoji: "😣", label: "Stressed", color: "bg-warning/15 text-warning" },
   { key: "sick", emoji: "🤒", label: "Sick", color: "bg-destructive/15 text-destructive" },
 ];
 
@@ -38,7 +39,7 @@ function MoodPage() {
         <Card className="shadow-card">
           <CardHeader><CardTitle>Today's mood</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
               {MOODS.map((m) => {
                 const active = todayMood?.mood === m.key;
                 return (

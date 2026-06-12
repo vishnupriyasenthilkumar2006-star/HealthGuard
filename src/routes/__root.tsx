@@ -120,6 +120,7 @@ function RootShell({ children }: { children: ReactNode }) {
 import { StoreProvider } from "@/lib/store";
 import { Toaster } from "@/components/ui/sonner";
 import { AlarmManager } from "@/components/alarm-manager";
+import { WellnessReminderManager } from "@/components/wellness-reminder-manager";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -129,6 +130,7 @@ function RootComponent() {
       <StoreProvider>
         <Outlet />
         <AlarmManager />
+        <WellnessReminderManager />
         <Toaster richColors position="top-right" />
       </StoreProvider>
     </QueryClientProvider>

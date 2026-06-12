@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu, Package, FileText, Calendar, BarChart3, LifeBuoy, Settings, Droplets, Moon, Activity, Smile, Sparkles, Lock, Trophy, MapPin, Mic, Truck, Wifi, WifiOff } from "lucide-react";
+import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu, Package, FileText, Calendar, BarChart3, LifeBuoy, Settings, Droplets, Moon, Activity, Smile, Sparkles, Lock, Trophy, MapPin, Mic, Truck, Wifi, WifiOff, HeartPulse } from "lucide-react";
 import { useState, useEffect, type ReactNode } from "react";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ const navGroups = [
   {
     label: "Health",
     items: [
+      { to: "/wellness", label: "Wellness", icon: HeartPulse },
       { to: "/water", label: "Water", icon: Droplets },
       { to: "/sleep", label: "Sleep", icon: Moon },
       { to: "/exercise", label: "Exercise", icon: Activity },
