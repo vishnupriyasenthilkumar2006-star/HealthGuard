@@ -28,6 +28,7 @@ const navGroups = [
   {
     label: "Health",
     items: [
+      { to: "/wellness", label: "Wellness", icon: HeartPulse },
       { to: "/water", label: "Water", icon: Droplets },
       { to: "/sleep", label: "Sleep", icon: Moon },
       { to: "/exercise", label: "Exercise", icon: Activity },
