@@ -39,7 +39,7 @@ function MoodPage() {
         <Card className="shadow-card">
           <CardHeader><CardTitle>Today's mood</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
               {MOODS.map((m) => {
                 const active = todayMood?.mood === m.key;
                 return (
