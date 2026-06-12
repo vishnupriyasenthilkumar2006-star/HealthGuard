@@ -16,6 +16,7 @@ const MOODS: { key: Mood; emoji: string; label: string; color: string }[] = [
   { key: "happy", emoji: "😊", label: "Happy", color: "bg-success/15 text-success" },
   { key: "normal", emoji: "🙂", label: "Normal", color: "bg-primary/15 text-primary" },
   { key: "tired", emoji: "😴", label: "Tired", color: "bg-warning/15 text-warning" },
+  { key: "stressed", emoji: "😣", label: "Stressed", color: "bg-warning/15 text-warning" },
   { key: "sick", emoji: "🤒", label: "Sick", color: "bg-destructive/15 text-destructive" },
 ];
 

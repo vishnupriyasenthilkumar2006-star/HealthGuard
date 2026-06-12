@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WellnessRouteImport } from './routes/wellness'
 import { Route as WaterRouteImport } from './routes/water'
 import { Route as VoiceRouteImport } from './routes/voice'
 import { Route as VaultRouteImport } from './routes/vault'
@@ -37,6 +38,11 @@ import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WellnessRoute = WellnessRouteImport.update({
+  id: '/wellness',
+  path: '/wellness',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WaterRoute = WaterRouteImport.update({
   id: '/water',
   path: '/water',
@@ -201,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/vault': typeof VaultRoute
   '/voice': typeof VoiceRoute
   '/water': typeof WaterRoute
+  '/wellness': typeof WellnessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -230,6 +237,7 @@ export interface FileRoutesByTo {
   '/vault': typeof VaultRoute
   '/voice': typeof VoiceRoute
   '/water': typeof WaterRoute
+  '/wellness': typeof WellnessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -260,6 +268,7 @@ export interface FileRoutesById {
   '/vault': typeof VaultRoute
   '/voice': typeof VoiceRoute
   '/water': typeof WaterRoute
+  '/wellness': typeof WellnessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -291,6 +300,7 @@ export interface FileRouteTypes {
     | '/vault'
     | '/voice'
     | '/water'
+    | '/wellness'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -320,6 +330,7 @@ export interface FileRouteTypes {
     | '/vault'
     | '/voice'
     | '/water'
+    | '/wellness'
   id:
     | '__root__'
     | '/'
@@ -349,6 +360,7 @@ export interface FileRouteTypes {
     | '/vault'
     | '/voice'
     | '/water'
+    | '/wellness'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -379,10 +391,18 @@ export interface RootRouteChildren {
   VaultRoute: typeof VaultRoute
   VoiceRoute: typeof VoiceRoute
   WaterRoute: typeof WaterRoute
+  WellnessRoute: typeof WellnessRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wellness': {
+      id: '/wellness'
+      path: '/wellness'
+      fullPath: '/wellness'
+      preLoaderRoute: typeof WellnessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/water': {
       id: '/water'
       path: '/water'
@@ -603,6 +623,7 @@ const rootRouteChildren: RootRouteChildren = {
   VaultRoute: VaultRoute,
   VoiceRoute: VoiceRoute,
   WaterRoute: WaterRoute,
+  WellnessRoute: WellnessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
