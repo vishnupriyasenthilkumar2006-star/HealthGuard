@@ -86,7 +86,7 @@ export type AlarmSettings = {
 export type WaterLog = { date: string; glasses: number };
 export type SleepLog = { id: string; date: string; sleepTime: string; wakeTime: string; hours: number; quality?: number };
 export type ExerciseLog = { id: string; date: string; type: string; minutes: number; steps?: number };
-export type Mood = "happy" | "normal" | "sick" | "tired";
+export type Mood = "happy" | "normal" | "sick" | "tired" | "stressed";
 export type MoodLog = { date: string; mood: Mood; note?: string };
 
 export type VaultCategory = "prescription" | "lab" | "scan" | "vaccination" | "other";
