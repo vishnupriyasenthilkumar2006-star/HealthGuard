@@ -486,7 +486,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     updatePrefs: (p) => setPrefs((prev) => ({ ...prev, ...p })),
     awardPoints: (n, badge) => setRewards((r) => ({ ...r, points: r.points + n, badges: badge && !r.badges.includes(badge) ? [...r.badges, badge] : r.badges })),
     login: () => setIsAuthed(true),
-    logout: () => setIsAuthed(false),
+    logout: () => { signOut(auth).catch(() => {}); setIsAuthed(false); },
   }), [medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards]);
 
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
