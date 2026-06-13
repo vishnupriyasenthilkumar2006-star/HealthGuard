@@ -4,6 +4,8 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/forgot-password")({
@@ -14,12 +16,21 @@ export const Route = createFileRoute("/forgot-password")({
 function ForgotPage() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return toast.error("Enter your email.");
-    setSent(true);
-    toast.success("If an account exists, a reset link has been sent.");
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setSent(true);
+      toast.success("Password reset email sent.");
+    } catch (err: any) {
+      toast.error(err?.message ?? "Could not send reset email.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,7 +57,7 @@ function ForgotPage() {
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
           </div>
-          <Button type="submit" className="w-full bg-gradient-primary">Send reset link</Button>
+          <Button type="submit" disabled={loading} className="w-full bg-gradient-primary">{loading ? "Sending…" : "Send reset link"}</Button>
         </form>
       )}
     </AuthShell>
