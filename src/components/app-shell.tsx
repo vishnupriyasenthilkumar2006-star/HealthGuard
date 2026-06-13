@@ -111,7 +111,7 @@ function Brand() {
 }
 
 function useOnline() {
-  const [online, setOnline] = useState(typeof navigator !== "undefined" ? navigator.onLine : true);
+  const [online, setOnline] = useState(true);
   useEffect(() => {
     const on = () => setOnline(true);
     const off = () => setOnline(false);
