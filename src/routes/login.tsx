@@ -4,7 +4,8 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useStore } from "@/lib/store";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
@@ -13,20 +14,27 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { login } = useStore();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("alex.morgan@example.com");
-  const [password, setPassword] = useState("demo1234");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error("Please enter your email and password.");
       return;
     }
-    login();
-    toast.success("Welcome back!");
-    navigate({ to: "/dashboard" });
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast.success("Welcome back!");
+      navigate({ to: "/dashboard" });
+    } catch (err: any) {
+      toast.error(err?.message ?? "Sign in failed.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -52,8 +60,7 @@ function LoginPage() {
           </div>
           <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
         </div>
-        <Button type="submit" className="w-full bg-gradient-primary">Sign in</Button>
-        <p className="text-center text-xs text-muted-foreground">Demo credentials prefilled — just click Sign in.</p>
+        <Button type="submit" disabled={loading} className="w-full bg-gradient-primary">{loading ? "Signing in…" : "Sign in"}</Button>
       </form>
     </AuthShell>
   );
