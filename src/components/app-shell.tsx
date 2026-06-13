@@ -113,6 +113,7 @@ function Brand() {
 function useOnline() {
   const [online, setOnline] = useState(true);
   useEffect(() => {
+    setOnline(navigator.onLine);
     const on = () => setOnline(true);
     const off = () => setOnline(false);
     window.addEventListener("online", on);
