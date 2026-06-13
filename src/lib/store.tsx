@@ -294,10 +294,15 @@ const defaultState = {
 };
 
 const StoreCtx = createContext<Store | null>(null);
-const KEY = "medialert-store-v4";
+
+// Strip large base64 data URLs before persisting to Firestore (1MB doc limit).
+function stripHeavy<T extends { dataUrl?: string }>(arr: T[] | undefined): T[] {
+  return (arr ?? []).map((x) => ({ ...x, dataUrl: "" }));
+}
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
+  const [uid, setUid] = useState<string | null>(null);
   const [medicines, setMedicines] = useState<Medicine[]>(defaultState.medicines);
   const [logs, setLogs] = useState<DoseLog[]>(defaultState.logs);
   const [caregivers, setCaregivers] = useState<Caregiver[]>(defaultState.caregivers);
@@ -315,36 +320,95 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [prefs, setPrefs] = useState<Preferences>(defaultPrefs);
   const [rewards, setRewards] = useState<Rewards>(defaultRewards);
 
+  const loadingUidRef = useRef<string | null>(null);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Subscribe to Firebase auth state and load/seed user's Firestore doc.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const s = JSON.parse(raw);
-        if (s.medicines) setMedicines(s.medicines);
-        if (s.logs) setLogs(s.logs);
-        if (s.caregivers) setCaregivers(s.caregivers);
-        if (s.profile) setProfile(s.profile);
-        if (s.prescriptions) setPrescriptions(s.prescriptions);
-        if (s.appointments) setAppointments(s.appointments);
-        if (s.alarmSettings) setAlarmSettings({ ...defaultAlarmSettings, ...s.alarmSettings });
-        if (typeof s.isAuthed === "boolean") setIsAuthed(s.isAuthed);
-        if (s.waterLogs) setWaterLogs(s.waterLogs);
-        if (s.sleepLogs) setSleepLogs(s.sleepLogs);
-        if (s.exerciseLogs) setExerciseLogs(s.exerciseLogs);
-        if (s.moodLogs) setMoodLogs(s.moodLogs);
-        if (s.vault) setVault(s.vault);
-        if (s.refills) setRefills(s.refills);
-        if (s.prefs) setPrefs({ ...defaultPrefs, ...s.prefs });
-        if (s.rewards) setRewards({ ...defaultRewards, ...s.rewards });
+    const unsub = onAuthStateChanged(auth, async (user: User | null) => {
+      if (!user) {
+        setUid(null);
+        setIsAuthed(false);
+        setHydrated(true);
+        return;
       }
-    } catch {}
-    setHydrated(true);
+      loadingUidRef.current = user.uid;
+      setUid(user.uid);
+      setIsAuthed(true);
+      try {
+        const ref = doc(db, "users", user.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const s = snap.data() as any;
+          if (s.medicines) setMedicines(s.medicines);
+          if (s.logs) setLogs(s.logs);
+          if (s.caregivers) setCaregivers(s.caregivers);
+          if (s.profile) setProfile(s.profile);
+          if (s.prescriptions) setPrescriptions(s.prescriptions);
+          if (s.appointments) setAppointments(s.appointments);
+          if (s.alarmSettings) setAlarmSettings({ ...defaultAlarmSettings, ...s.alarmSettings });
+          if (s.waterLogs) setWaterLogs(s.waterLogs);
+          if (s.sleepLogs) setSleepLogs(s.sleepLogs);
+          if (s.exerciseLogs) setExerciseLogs(s.exerciseLogs);
+          if (s.moodLogs) setMoodLogs(s.moodLogs);
+          if (s.vault) setVault(s.vault);
+          if (s.refills) setRefills(s.refills);
+          if (s.prefs) setPrefs({ ...defaultPrefs, ...s.prefs });
+          if (s.rewards) setRewards({ ...defaultRewards, ...s.rewards });
+        } else {
+          // Seed a new user document with starter data.
+          const seed = {
+            medicines: defaultState.medicines,
+            logs: defaultState.logs,
+            caregivers: defaultState.caregivers,
+            profile: { ...defaultState.profile, email: user.email ?? defaultState.profile.email, fullName: user.displayName ?? defaultState.profile.fullName },
+            prescriptions: defaultState.prescriptions,
+            appointments: defaultState.appointments,
+            alarmSettings: defaultAlarmSettings,
+            waterLogs: defaultState.waterLogs,
+            sleepLogs: defaultState.sleepLogs,
+            exerciseLogs: defaultState.exerciseLogs,
+            moodLogs: defaultState.moodLogs,
+            vault: defaultState.vault,
+            refills: defaultState.refills,
+            prefs: defaultPrefs,
+            rewards: defaultRewards,
+          };
+          setProfile(seed.profile);
+          await setDoc(ref, seed);
+        }
+      } catch (err) {
+        console.error("Failed to load user data from Firestore", err);
+      } finally {
+        loadingUidRef.current = null;
+        setHydrated(true);
+      }
+    });
+    return () => unsub();
   }, []);
 
+  // Debounced persistence to Firestore whenever data changes.
   useEffect(() => {
-    if (!hydrated) return;
-    localStorage.setItem(KEY, JSON.stringify({ medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards }));
-  }, [medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards, hydrated]);
+    if (!hydrated || !uid || loadingUidRef.current === uid) return;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      const payload = {
+        medicines, logs, caregivers, profile,
+        prescriptions: stripHeavy(prescriptions),
+        appointments, alarmSettings,
+        waterLogs, sleepLogs, exerciseLogs, moodLogs,
+        vault: stripHeavy(vault),
+        refills, prefs, rewards,
+        updatedAt: Date.now(),
+      };
+      setDoc(doc(db, "users", uid), payload, { merge: true }).catch((err) =>
+        console.error("Failed to save user data to Firestore", err),
+      );
+    }, 600);
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [uid, hydrated, medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards]);
 
   const upsertLog = (medicineId: string, date: string, time: string, patch: Partial<DoseLog>) => {
     setLogs((prev) => {
