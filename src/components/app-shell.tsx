@@ -77,6 +77,7 @@ function useNavGroups() {
 
 function NavList({ onClick }: { onClick?: () => void }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const navGroups = useNavGroups();
   return (
     <nav className="flex flex-col gap-3 p-3">
       {navGroups.map((group) => (
@@ -109,14 +110,15 @@ function NavList({ onClick }: { onClick?: () => void }) {
 }
 
 function Brand() {
+  const { t } = useTranslation();
   return (
     <Link to="/" className="flex items-center gap-2 px-4 py-5">
       <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-primary shadow-card">
         <Heart className="h-5 w-5 text-primary-foreground" fill="currentColor" />
       </div>
       <div>
-        <p className="text-base font-semibold tracking-tight">HealthGuard</p>
-        <p className="text-[11px] text-muted-foreground">Smart Health Companion</p>
+        <p className="text-base font-semibold tracking-tight">{t("appName")}</p>
+        <p className="text-[11px] text-muted-foreground">{t("tagline")}</p>
       </div>
     </Link>
   );
@@ -137,6 +139,7 @@ function useOnline() {
 
 export function AppShell({ children, title }: { children: ReactNode; title?: string }) {
   const { profile, logout, prefs } = useStore();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const online = useOnline();
@@ -144,6 +147,12 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
   useEffect(() => {
     document.documentElement.classList.toggle("elderly-mode", !!prefs.elderlyMode);
   }, [prefs.elderlyMode]);
+
+  useEffect(() => {
+    if (prefs.language && i18n.language !== prefs.language) {
+      i18n.changeLanguage(prefs.language);
+    }
+  }, [prefs.language]);
 
   const handleLogout = () => { logout(); navigate({ to: "/login" }); };
 
