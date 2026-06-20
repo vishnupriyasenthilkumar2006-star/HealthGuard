@@ -74,6 +74,8 @@ export type Appointment = {
   location?: string;
   notes?: string;
   status: "upcoming" | "completed" | "cancelled";
+  mode?: "in-person" | "online";
+  reason?: string;
 };
 
 export type AlarmSettings = {
