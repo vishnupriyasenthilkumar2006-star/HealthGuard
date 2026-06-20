@@ -198,7 +198,7 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
           <div className="ml-auto flex items-center gap-2">
             <span className={cn("flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium", online ? "bg-success/15 text-success" : "bg-warning/15 text-warning")}>
               {online ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
-              {online ? "Online" : "Offline"}
+              {online ? t("online") : t("offline")}
             </span>
           </div>
         </header>
