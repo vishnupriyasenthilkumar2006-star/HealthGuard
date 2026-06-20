@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Pill, CalendarCheck } from "lucide-react";
 
 export const Route = createFileRoute("/calendar")({
-  head: () => ({ meta: [{ title: "Health Calendar — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Health Calendar — HealthGuard" }] }),
   component: CalendarPage,
 });
 

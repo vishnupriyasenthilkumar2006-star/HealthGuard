@@ -13,7 +13,7 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianG
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/wellness")({
-  head: () => ({ meta: [{ title: "Wellness — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Wellness — HealthGuard" }] }),
   component: WellnessPage,
 });
 

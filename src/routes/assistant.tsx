@@ -8,7 +8,7 @@ import { Bot, Send, Sparkles, User } from "lucide-react";
 import { useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/assistant")({
-  head: () => ({ meta: [{ title: "AI Health Assistant — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "AI Health Assistant — HealthGuard" }] }),
   component: AssistantPage,
 });
 
@@ -46,7 +46,7 @@ function AssistantPage() {
   const next = appointments.filter((a) => a.status === "upcoming").sort((a, b) => a.date.localeCompare(b.date))[0];
   const nextAppt = next ? `${next.doctor} (${next.specialty}) on ${next.date} at ${next.time}` : "none scheduled";
 
-  const [messages, setMessages] = useState<Msg[]>([{ role: "bot", text: "Hi! I'm your MediAlert health assistant. Ask me about your medicines, schedule, or general wellness." }]);
+  const [messages, setMessages] = useState<Msg[]>([{ role: "bot", text: "Hi! I'm your HealthGuard health assistant. Ask me about your medicines, schedule, or general wellness." }]);
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 

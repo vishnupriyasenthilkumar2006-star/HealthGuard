@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/voice")({
-  head: () => ({ meta: [{ title: "Voice Assistant — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Voice Assistant — HealthGuard" }] }),
   component: VoicePage,
 });
 
@@ -93,7 +93,7 @@ function VoicePage() {
     <AppShell title="Voice Assistant">
       <div className="mb-6">
         <h2 className="text-2xl font-bold tracking-tight">Hands-free voice assistant</h2>
-        <p className="text-muted-foreground">Operate MediAlert with your voice — great for accessibility.</p>
+        <p className="text-muted-foreground">Operate HealthGuard with your voice — great for accessibility.</p>
       </div>
       <Card className="mb-6 shadow-card">
         <CardContent className="flex flex-col items-center gap-4 p-8">

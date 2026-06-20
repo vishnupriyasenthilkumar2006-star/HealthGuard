@@ -12,7 +12,7 @@ import { Bell, Volume2, Play, Globe, Accessibility, Mic } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/settings")({
-  head: () => ({ meta: [{ title: "Settings — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Settings — HealthGuard" }] }),
   component: SettingsPage,
 });
 
@@ -32,7 +32,7 @@ function SettingsPage() {
   const test = () => { playAlarmTone(s.defaultSound, s.volume); toast.success("Test alarm played"); };
   const testVoice = () => {
     if (typeof window === "undefined" || !window.speechSynthesis) { toast.error("Voice not supported"); return; }
-    const u = new SpeechSynthesisUtterance("This is a sample MediAlert voice reminder.");
+    const u = new SpeechSynthesisUtterance("This is a sample HealthGuard voice reminder.");
     window.speechSynthesis.speak(u);
   };
 

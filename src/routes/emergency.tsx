@@ -7,7 +7,7 @@ import { LifeBuoy, Phone, AlertTriangle, Heart, Droplet, ShieldAlert, User } fro
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/emergency")({
-  head: () => ({ meta: [{ title: "Emergency — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Emergency — HealthGuard" }] }),
   component: EmergencyPage,
 });
 

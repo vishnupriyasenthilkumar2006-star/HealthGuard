@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Phone, Navigation, Hospital, Stethoscope, Pill } from "lucide-react";
 
 export const Route = createFileRoute("/nearby")({
-  head: () => ({ meta: [{ title: "Nearby Healthcare — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Nearby Healthcare — HealthGuard" }] }),
   component: NearbyPage,
 });
 

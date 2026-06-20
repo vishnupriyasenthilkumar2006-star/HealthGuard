@@ -1,0 +1,192 @@
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
+
+export const SUPPORTED_LANGUAGES = [
+  { code: "en", label: "English", native: "English" },
+  { code: "ta", label: "Tamil", native: "தமிழ்" },
+  { code: "hi", label: "Hindi", native: "हिन्दी" },
+  { code: "te", label: "Telugu", native: "తెలుగు" },
+  { code: "ml", label: "Malayalam", native: "മലയാളം" },
+  { code: "kn", label: "Kannada", native: "ಕನ್ನಡ" },
+] as const;
+
+const resources = {
+  en: { translation: {
+    appName: "HealthGuard",
+    tagline: "Smart Telemedicine & Rural Healthcare",
+    nav: {
+      overview: "Overview", telemedicine: "Telemedicine", medicines: "Medicines",
+      health: "Health", records: "Records", support: "Support", account: "Account",
+      dashboard: "Dashboard", doctors: "Doctors", appointments: "Appointments",
+      consultations: "Consultations", calendar: "Calendar", analytics: "Analytics",
+      reminders: "Reminders", stock: "Stock", refill: "Smart Refill", history: "History",
+      wellness: "Wellness", water: "Water", sleep: "Sleep", exercise: "Exercise",
+      mood: "Mood", rewards: "Rewards", prescriptions: "Prescriptions", vault: "Medical Vault",
+      assistant: "AI Assistant", voice: "Voice Assistant", nearby: "Nearby Care",
+      caregivers: "Caregivers", emergency: "Emergency SOS", settings: "Settings", profile: "Profile",
+    },
+    actions: { book: "Book", schedule: "Schedule", consult: "Online Consultation", cancel: "Cancel", save: "Save" },
+    landing: {
+      pill: "Telemedicine • Rural healthcare • Multilingual",
+      headline: "Quality healthcare,",
+      headlineAccent: "wherever you are.",
+      subtitle: "HealthGuard connects rural patients with doctors through telemedicine, secure health records, and voice-first reminders — in your language.",
+      ctaStart: "Get started free",
+      ctaDemo: "Explore demo",
+      featuresTitle: "A complete healthcare companion",
+      featuresLead: "Built for rural India — telemedicine, records, reminders, and voice assistance in 6 languages.",
+    },
+    online: "Online", offline: "Offline",
+  }},
+  ta: { translation: {
+    appName: "HealthGuard",
+    tagline: "ஸ்மார்ட் தொலைமருத்துவம் & கிராமப்புற சுகாதாரம்",
+    nav: {
+      overview: "மேற்பார்வை", telemedicine: "தொலைமருத்துவம்", medicines: "மருந்துகள்",
+      health: "ஆரோக்கியம்", records: "பதிவுகள்", support: "ஆதரவு", account: "கணக்கு",
+      dashboard: "டாஷ்போர்டு", doctors: "மருத்துவர்கள்", appointments: "சந்திப்புகள்",
+      consultations: "ஆலோசனைகள்", calendar: "நாட்காட்டி", analytics: "பகுப்பாய்வு",
+      reminders: "நினைவூட்டல்கள்", stock: "இருப்பு", refill: "மறுநிரப்பல்", history: "வரலாறு",
+      wellness: "ஆரோக்கியம்", water: "தண்ணீர்", sleep: "தூக்கம்", exercise: "உடற்பயிற்சி",
+      mood: "மனநிலை", rewards: "வெகுமதிகள்", prescriptions: "மருந்துச்சீட்டுகள்", vault: "மருத்துவ பெட்டகம்",
+      assistant: "AI உதவியாளர்", voice: "குரல் உதவியாளர்", nearby: "அருகிலுள்ள மருத்துவம்",
+      caregivers: "பராமரிப்பாளர்கள்", emergency: "அவசர SOS", settings: "அமைப்புகள்", profile: "சுயவிவரம்",
+    },
+    actions: { book: "முன்பதிவு", schedule: "திட்டமிடு", consult: "ஆன்லைன் ஆலோசனை", cancel: "ரத்து", save: "சேமி" },
+    landing: {
+      pill: "தொலைமருத்துவம் • கிராமப்புற சுகாதாரம் • பல மொழி",
+      headline: "தரமான சுகாதாரம்,",
+      headlineAccent: "நீங்கள் எங்கிருந்தாலும்.",
+      subtitle: "HealthGuard கிராமப்புற நோயாளிகளை மருத்துவர்களுடன் இணைக்கிறது — உங்கள் மொழியில்.",
+      ctaStart: "இலவசமாக தொடங்கவும்",
+      ctaDemo: "டெமோ பார்க்கவும்",
+      featuresTitle: "முழுமையான சுகாதார துணை",
+      featuresLead: "கிராமப்புற இந்தியாவிற்காக வடிவமைக்கப்பட்டது — 6 மொழிகளில்.",
+    },
+    online: "ஆன்லைன்", offline: "ஆஃப்லைன்",
+  }},
+  hi: { translation: {
+    appName: "HealthGuard",
+    tagline: "स्मार्ट टेलीमेडिसिन और ग्रामीण स्वास्थ्य सेवा",
+    nav: {
+      overview: "अवलोकन", telemedicine: "टेलीमेडिसिन", medicines: "दवाइयाँ",
+      health: "स्वास्थ्य", records: "रिकॉर्ड", support: "सहायता", account: "खाता",
+      dashboard: "डैशबोर्ड", doctors: "डॉक्टर", appointments: "अपॉइंटमेंट",
+      consultations: "परामर्श", calendar: "कैलेंडर", analytics: "विश्लेषण",
+      reminders: "अनुस्मारक", stock: "स्टॉक", refill: "रिफिल", history: "इतिहास",
+      wellness: "स्वास्थ्य", water: "पानी", sleep: "नींद", exercise: "व्यायाम",
+      mood: "मूड", rewards: "पुरस्कार", prescriptions: "नुस्खे", vault: "मेडिकल वॉल्ट",
+      assistant: "AI सहायक", voice: "वॉइस सहायक", nearby: "नज़दीकी देखभाल",
+      caregivers: "देखभालकर्ता", emergency: "इमरजेंसी SOS", settings: "सेटिंग्स", profile: "प्रोफ़ाइल",
+    },
+    actions: { book: "बुक करें", schedule: "शेड्यूल", consult: "ऑनलाइन परामर्श", cancel: "रद्द", save: "सहेजें" },
+    landing: {
+      pill: "टेलीमेडिसिन • ग्रामीण स्वास्थ्य • बहुभाषी",
+      headline: "गुणवत्तापूर्ण स्वास्थ्य,",
+      headlineAccent: "जहाँ भी आप हों।",
+      subtitle: "HealthGuard ग्रामीण मरीजों को डॉक्टरों से जोड़ता है — आपकी भाषा में।",
+      ctaStart: "मुफ़्त शुरू करें",
+      ctaDemo: "डेमो देखें",
+      featuresTitle: "एक संपूर्ण स्वास्थ्य साथी",
+      featuresLead: "ग्रामीण भारत के लिए — 6 भाषाओं में।",
+    },
+    online: "ऑनलाइन", offline: "ऑफ़लाइन",
+  }},
+  te: { translation: {
+    appName: "HealthGuard",
+    tagline: "స్మార్ట్ టెలిమెడిసిన్ & గ్రామీణ ఆరోగ్యం",
+    nav: {
+      overview: "అవలోకనం", telemedicine: "టెలిమెడిసిన్", medicines: "మందులు",
+      health: "ఆరోగ్యం", records: "రికార్డులు", support: "మద్దతు", account: "ఖాతా",
+      dashboard: "డాష్‌బోర్డ్", doctors: "వైద్యులు", appointments: "అపాయింట్‌మెంట్లు",
+      consultations: "సంప్రదింపులు", calendar: "క్యాలెండర్", analytics: "విశ్లేషణ",
+      reminders: "రిమైండర్లు", stock: "స్టాక్", refill: "రీఫిల్", history: "చరిత్ర",
+      wellness: "శ్రేయస్సు", water: "నీరు", sleep: "నిద్ర", exercise: "వ్యాయామం",
+      mood: "మూడ్", rewards: "బహుమతులు", prescriptions: "ప్రిస్క్రిప్షన్లు", vault: "మెడికల్ వాల్ట్",
+      assistant: "AI సహాయకుడు", voice: "వాయిస్ సహాయకుడు", nearby: "సమీప సంరక్షణ",
+      caregivers: "సంరక్షకులు", emergency: "ఎమర్జెన్సీ SOS", settings: "సెట్టింగ్‌లు", profile: "ప్రొఫైల్",
+    },
+    actions: { book: "బుక్", schedule: "షెడ్యూల్", consult: "ఆన్‌లైన్ సంప్రదింపు", cancel: "రద్దు", save: "సేవ్" },
+    landing: {
+      pill: "టెలిమెడిసిన్ • గ్రామీణ ఆరోగ్యం • బహుభాషా",
+      headline: "నాణ్యమైన ఆరోగ్యం,",
+      headlineAccent: "మీరు ఎక్కడ ఉన్నా.",
+      subtitle: "HealthGuard గ్రామీణ రోగులను వైద్యులతో కలుపుతుంది — మీ భాషలో.",
+      ctaStart: "ఉచితంగా ప్రారంభించండి",
+      ctaDemo: "డెమో చూడండి",
+      featuresTitle: "పూర్తి ఆరోగ్య సహచరుడు",
+      featuresLead: "గ్రామీణ భారతదేశం కోసం — 6 భాషల్లో.",
+    },
+    online: "ఆన్‌లైన్", offline: "ఆఫ్‌లైన్",
+  }},
+  ml: { translation: {
+    appName: "HealthGuard",
+    tagline: "സ്മാർട്ട് ടെലിമെഡിസിൻ & ഗ്രാമീണ ആരോഗ്യം",
+    nav: {
+      overview: "അവലോകനം", telemedicine: "ടെലിമെഡിസിൻ", medicines: "മരുന്നുകൾ",
+      health: "ആരോഗ്യം", records: "രേഖകൾ", support: "പിന്തുണ", account: "അക്കൗണ്ട്",
+      dashboard: "ഡാഷ്‌ബോർഡ്", doctors: "ഡോക്ടർമാർ", appointments: "അപ്പോയിന്റ്മെന്റുകൾ",
+      consultations: "കൺസൾട്ടേഷനുകൾ", calendar: "കലണ്ടർ", analytics: "വിശകലനം",
+      reminders: "ഓർമ്മപ്പെടുത്തലുകൾ", stock: "സ്റ്റോക്ക്", refill: "റീഫിൽ", history: "ചരിത്രം",
+      wellness: "ക്ഷേമം", water: "വെള്ളം", sleep: "ഉറക്കം", exercise: "വ്യായാമം",
+      mood: "മൂഡ്", rewards: "സമ്മാനങ്ങൾ", prescriptions: "കുറിപ്പടികൾ", vault: "മെഡിക്കൽ വോൾട്ട്",
+      assistant: "AI സഹായി", voice: "വോയ്സ് സഹായി", nearby: "സമീപ പരിചരണം",
+      caregivers: "പരിചാരകർ", emergency: "എമർജൻസി SOS", settings: "ക്രമീകരണങ്ങൾ", profile: "പ്രൊഫൈൽ",
+    },
+    actions: { book: "ബുക്ക്", schedule: "ഷെഡ്യൂൾ", consult: "ഓൺലൈൻ കൺസൾട്ടേഷൻ", cancel: "റദ്ദാക്കുക", save: "സേവ്" },
+    landing: {
+      pill: "ടെലിമെഡിസിൻ • ഗ്രാമീണ ആരോഗ്യം • ബഹുഭാഷ",
+      headline: "ഗുണനിലവാരമുള്ള ആരോഗ്യം,",
+      headlineAccent: "നിങ്ങൾ എവിടെയായാലും.",
+      subtitle: "HealthGuard ഗ്രാമീണ രോഗികളെ ഡോക്ടർമാരുമായി ബന്ധിപ്പിക്കുന്നു — നിങ്ങളുടെ ഭാഷയിൽ.",
+      ctaStart: "സൗജന്യമായി തുടങ്ങുക",
+      ctaDemo: "ഡെമോ കാണുക",
+      featuresTitle: "സമ്പൂർണ്ണ ആരോഗ്യ കൂട്ടാളി",
+      featuresLead: "ഗ്രാമീണ ഇന്ത്യയ്ക്കായി — 6 ഭാഷകളിൽ.",
+    },
+    online: "ഓൺലൈൻ", offline: "ഓഫ്‌ലൈൻ",
+  }},
+  kn: { translation: {
+    appName: "HealthGuard",
+    tagline: "ಸ್ಮಾರ್ಟ್ ಟೆಲಿಮೆಡಿಸಿನ್ ಮತ್ತು ಗ್ರಾಮೀಣ ಆರೋಗ್ಯ",
+    nav: {
+      overview: "ಅವಲೋಕನ", telemedicine: "ಟೆಲಿಮೆಡಿಸಿನ್", medicines: "ಔಷಧಗಳು",
+      health: "ಆರೋಗ್ಯ", records: "ದಾಖಲೆಗಳು", support: "ಬೆಂಬಲ", account: "ಖಾತೆ",
+      dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", doctors: "ವೈದ್ಯರು", appointments: "ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್‌ಗಳು",
+      consultations: "ಸಮಾಲೋಚನೆಗಳು", calendar: "ಕ್ಯಾಲೆಂಡರ್", analytics: "ವಿಶ್ಲೇಷಣೆ",
+      reminders: "ಜ್ಞಾಪನೆಗಳು", stock: "ಸ್ಟಾಕ್", refill: "ರೀಫಿಲ್", history: "ಇತಿಹಾಸ",
+      wellness: "ಕ್ಷೇಮ", water: "ನೀರು", sleep: "ನಿದ್ರೆ", exercise: "ವ್ಯಾಯಾಮ",
+      mood: "ಮನಸ್ಥಿತಿ", rewards: "ಬಹುಮಾನಗಳು", prescriptions: "ಔಷಧಿ ಚೀಟಿಗಳು", vault: "ವೈದ್ಯಕೀಯ ವಾಲ್ಟ್",
+      assistant: "AI ಸಹಾಯಕ", voice: "ಧ್ವನಿ ಸಹಾಯಕ", nearby: "ಸಮೀಪದ ಆರೈಕೆ",
+      caregivers: "ಆರೈಕೆದಾರರು", emergency: "ತುರ್ತು SOS", settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", profile: "ಪ್ರೊಫೈಲ್",
+    },
+    actions: { book: "ಬುಕ್", schedule: "ಶೆಡ್ಯೂಲ್", consult: "ಆನ್‌ಲೈನ್ ಸಮಾಲೋಚನೆ", cancel: "ರದ್ದು", save: "ಉಳಿಸಿ" },
+    landing: {
+      pill: "ಟೆಲಿಮೆಡಿಸಿನ್ • ಗ್ರಾಮೀಣ ಆರೋಗ್ಯ • ಬಹುಭಾಷಾ",
+      headline: "ಗುಣಮಟ್ಟದ ಆರೋಗ್ಯ,",
+      headlineAccent: "ನೀವು ಎಲ್ಲಿದ್ದರೂ.",
+      subtitle: "HealthGuard ಗ್ರಾಮೀಣ ರೋಗಿಗಳನ್ನು ವೈದ್ಯರೊಂದಿಗೆ ಸಂಪರ್ಕಿಸುತ್ತದೆ — ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.",
+      ctaStart: "ಉಚಿತವಾಗಿ ಪ್ರಾರಂಭಿಸಿ",
+      ctaDemo: "ಡೆಮೋ ನೋಡಿ",
+      featuresTitle: "ಸಂಪೂರ್ಣ ಆರೋಗ್ಯ ಸಂಗಾತಿ",
+      featuresLead: "ಗ್ರಾಮೀಣ ಭಾರತಕ್ಕಾಗಿ — 6 ಭಾಷೆಗಳಲ್ಲಿ.",
+    },
+    online: "ಆನ್‌ಲೈನ್", offline: "ಆಫ್‌ಲೈನ್",
+  }},
+};
+
+if (!i18n.isInitialized) {
+  i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      resources,
+      fallbackLng: "en",
+      supportedLngs: SUPPORTED_LANGUAGES.map((l) => l.code),
+      interpolation: { escapeValue: false },
+      detection: { order: ["localStorage", "navigator"], caches: ["localStorage"] },
+    });
+}
+
+export default i18n;

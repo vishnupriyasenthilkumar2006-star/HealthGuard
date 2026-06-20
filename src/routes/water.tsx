@@ -11,7 +11,7 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGri
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/water")({
-  head: () => ({ meta: [{ title: "Water Tracker — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Water Tracker — HealthGuard" }] }),
   component: WaterPage,
 });
 

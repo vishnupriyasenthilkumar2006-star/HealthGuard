@@ -20,7 +20,7 @@ export function AuthShell({
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-primary shadow-card">
             <Heart className="h-5 w-5 text-primary-foreground" fill="currentColor" />
           </div>
-          <span className="text-lg font-semibold tracking-tight">MediAlert</span>
+          <span className="text-lg font-semibold tracking-tight">HealthGuard</span>
         </Link>
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
           <h1 className="text-3xl font-bold tracking-tight">{title}</h1>

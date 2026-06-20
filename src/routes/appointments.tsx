@@ -16,7 +16,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/appointments")({
-  head: () => ({ meta: [{ title: "Appointments — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Appointments — HealthGuard" }] }),
   component: AppointmentsPage,
 });
 

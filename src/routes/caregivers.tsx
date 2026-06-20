@@ -12,7 +12,7 @@ import { Plus, Phone, Mail, Trash2, ShieldAlert, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/caregivers")({
-  head: () => ({ meta: [{ title: "Caregivers — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Caregivers — HealthGuard" }] }),
   component: CaregiversPage,
 });
 

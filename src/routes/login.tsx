@@ -9,7 +9,7 @@ import { auth } from "@/lib/firebase";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Sign in — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Sign in — HealthGuard" }] }),
   component: LoginPage,
 });
 
