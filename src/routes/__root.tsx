@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import "../lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -77,18 +78,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "HealthGuard is a healthcare web app that helps users manage medications and track health." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "HealthGuard is a healthcare web app that helps users manage medications and track health." },
+      { title: "HealthGuard — Smart Telemedicine & Rural Healthcare" },
+      { name: "description", content: "HealthGuard is a telemedicine platform connecting rural patients with doctors, health records, and multilingual care." },
+      { name: "author", content: "HealthGuard" },
+      { property: "og:title", content: "HealthGuard — Smart Telemedicine & Rural Healthcare" },
+      { property: "og:description", content: "Telemedicine, health records, voice assistance, and care in 6 languages — built for rural India." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
-      { name: "twitter:description", content: "HealthGuard is a healthcare web app that helps users manage medications and track health." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f4e9f085-77f9-4f23-9219-ff0e1d358ca0/id-preview-c07a56f2--d74446ee-3ac7-4c7c-8029-16ba939b76b6.lovable.app-1780575339445.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f4e9f085-77f9-4f23-9219-ff0e1d358ca0/id-preview-c07a56f2--d74446ee-3ac7-4c7c-8029-16ba939b76b6.lovable.app-1780575339445.png" },
+      { name: "twitter:title", content: "HealthGuard — Smart Telemedicine" },
+      { name: "twitter:description", content: "Telemedicine, health records, and multilingual care for rural India." },
     ],
     links: [
       {
