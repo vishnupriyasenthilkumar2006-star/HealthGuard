@@ -1,67 +1,79 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu, Package, FileText, Calendar, BarChart3, LifeBuoy, Settings, Droplets, Moon, Activity, Smile, Sparkles, Lock, Trophy, MapPin, Mic, Truck, Wifi, WifiOff, HeartPulse } from "lucide-react";
+import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu, Package, FileText, Calendar, BarChart3, LifeBuoy, Settings, Droplets, Moon, Activity, Smile, Sparkles, Lock, Trophy, MapPin, Mic, Truck, Wifi, WifiOff, HeartPulse, Stethoscope, Video } from "lucide-react";
 import { useState, useEffect, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "@/lib/i18n";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-const navGroups = [
-  {
-    label: "Overview",
-    items: [
-      { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { to: "/calendar", label: "Calendar", icon: Calendar },
-      { to: "/analytics", label: "Analytics", icon: BarChart3 },
-    ],
-  },
-  {
-    label: "Medicines",
-    items: [
-      { to: "/medicines", label: "Medicines", icon: Pill },
-      { to: "/reminders", label: "Reminders", icon: Bell },
-      { to: "/stock", label: "Stock", icon: Package },
-      { to: "/refill", label: "Smart Refill", icon: Truck },
-      { to: "/history", label: "History", icon: History },
-    ],
-  },
-  {
-    label: "Health",
-    items: [
-      { to: "/wellness", label: "Wellness", icon: HeartPulse },
-      { to: "/water", label: "Water", icon: Droplets },
-      { to: "/sleep", label: "Sleep", icon: Moon },
-      { to: "/exercise", label: "Exercise", icon: Activity },
-      { to: "/mood", label: "Mood", icon: Smile },
-      { to: "/rewards", label: "Rewards", icon: Trophy },
-    ],
-  },
-  {
-    label: "Records",
-    items: [
-      { to: "/prescriptions", label: "Prescriptions", icon: FileText },
-      { to: "/vault", label: "Medical Vault", icon: Lock },
-      { to: "/appointments", label: "Appointments", icon: Calendar },
-    ],
-  },
-  {
-    label: "Support",
-    items: [
-      { to: "/assistant", label: "AI Assistant", icon: Sparkles },
-      { to: "/voice", label: "Voice Assistant", icon: Mic },
-      { to: "/nearby", label: "Nearby Care", icon: MapPin },
-      { to: "/caregivers", label: "Caregivers", icon: Users },
-      { to: "/emergency", label: "Emergency", icon: LifeBuoy },
-    ],
-  },
-  {
-    label: "Account",
-    items: [
-      { to: "/settings", label: "Settings", icon: Settings },
-      { to: "/profile", label: "Profile", icon: User },
-    ],
-  },
-] as const;
+function useNavGroups() {
+  const { t } = useTranslation();
+  return [
+    {
+      label: t("nav.overview"),
+      items: [
+        { to: "/dashboard", label: t("nav.dashboard"), icon: LayoutDashboard },
+        { to: "/calendar", label: t("nav.calendar"), icon: Calendar },
+        { to: "/analytics", label: t("nav.analytics"), icon: BarChart3 },
+      ],
+    },
+    {
+      label: t("nav.telemedicine"),
+      items: [
+        { to: "/doctors", label: t("nav.doctors"), icon: Stethoscope },
+        { to: "/appointments", label: t("nav.appointments"), icon: Calendar },
+        { to: "/consultations", label: t("nav.consultations"), icon: Video },
+        { to: "/nearby", label: t("nav.nearby"), icon: MapPin },
+      ],
+    },
+    {
+      label: t("nav.records"),
+      items: [
+        { to: "/prescriptions", label: t("nav.prescriptions"), icon: FileText },
+        { to: "/vault", label: t("nav.vault"), icon: Lock },
+      ],
+    },
+    {
+      label: t("nav.medicines"),
+      items: [
+        { to: "/medicines", label: t("nav.medicines"), icon: Pill },
+        { to: "/reminders", label: t("nav.reminders"), icon: Bell },
+        { to: "/stock", label: t("nav.stock"), icon: Package },
+        { to: "/refill", label: t("nav.refill"), icon: Truck },
+        { to: "/history", label: t("nav.history"), icon: History },
+      ],
+    },
+    {
+      label: t("nav.health"),
+      items: [
+        { to: "/wellness", label: t("nav.wellness"), icon: HeartPulse },
+        { to: "/water", label: t("nav.water"), icon: Droplets },
+        { to: "/sleep", label: t("nav.sleep"), icon: Moon },
+        { to: "/exercise", label: t("nav.exercise"), icon: Activity },
+        { to: "/mood", label: t("nav.mood"), icon: Smile },
+        { to: "/rewards", label: t("nav.rewards"), icon: Trophy },
+      ],
+    },
+    {
+      label: t("nav.support"),
+      items: [
+        { to: "/assistant", label: t("nav.assistant"), icon: Sparkles },
+        { to: "/voice", label: t("nav.voice"), icon: Mic },
+        { to: "/caregivers", label: t("nav.caregivers"), icon: Users },
+        { to: "/emergency", label: t("nav.emergency"), icon: LifeBuoy },
+      ],
+    },
+    {
+      label: t("nav.account"),
+      items: [
+        { to: "/settings", label: t("nav.settings"), icon: Settings },
+        { to: "/profile", label: t("nav.profile"), icon: User },
+      ],
+    },
+  ];
+}
 
 function NavList({ onClick }: { onClick?: () => void }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
