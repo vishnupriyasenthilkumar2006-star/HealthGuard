@@ -11,7 +11,7 @@ import { Download, History as HistoryIcon, Pill } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/history")({
-  head: () => ({ meta: [{ title: "Medicine history — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Medicine history — HealthGuard" }] }),
   component: HistoryPage,
 });
 
@@ -48,7 +48,7 @@ function HistoryPage() {
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = `medialert-history-${from}-to-${to}.csv`;
+    a.href = url; a.download = `healthguard-history-${from}-to-${to}.csv`;
     a.click(); URL.revokeObjectURL(url);
     toast.success("Report downloaded");
   };

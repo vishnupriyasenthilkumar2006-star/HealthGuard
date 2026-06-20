@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/mood")({
-  head: () => ({ meta: [{ title: "Mood Tracker — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Mood Tracker — HealthGuard" }] }),
   component: MoodPage,
 });
 

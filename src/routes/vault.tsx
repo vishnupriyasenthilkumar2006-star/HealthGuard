@@ -14,7 +14,7 @@ import { FileText, FlaskConical, Scan, Syringe, Folder, Plus, Trash2, Download, 
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/vault")({
-  head: () => ({ meta: [{ title: "Medical Records Vault — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Medical Records Vault — HealthGuard" }] }),
   component: VaultPage,
 });
 

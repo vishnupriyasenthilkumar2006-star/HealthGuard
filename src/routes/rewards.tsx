@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Trophy, Flame, Star, Award, Target, Droplets } from "lucide-react";
 
 export const Route = createFileRoute("/rewards")({
-  head: () => ({ meta: [{ title: "Rewards — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Rewards — HealthGuard" }] }),
   component: RewardsPage,
 });
 

@@ -10,7 +10,7 @@ type LastFired = {
   wake?: string;
 };
 
-const STORE_KEY = "medialert-wellness-last-fired";
+const STORE_KEY = "healthguard-wellness-last-fired";
 
 function loadLast(): LastFired {
   if (typeof window === "undefined") return {};

@@ -6,7 +6,7 @@ import { BarChart3, TrendingUp, CheckCircle2, AlertTriangle } from "lucide-react
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, BarChart, Bar, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
 
 export const Route = createFileRoute("/analytics")({
-  head: () => ({ meta: [{ title: "Analytics — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Analytics — HealthGuard" }] }),
   component: AnalyticsPage,
 });
 

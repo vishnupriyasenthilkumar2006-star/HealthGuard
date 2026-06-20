@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/profile")({
-  head: () => ({ meta: [{ title: "Profile — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Profile — HealthGuard" }] }),
   component: ProfilePage,
 });
 

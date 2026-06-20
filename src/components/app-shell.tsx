@@ -103,7 +103,7 @@ function Brand() {
         <Heart className="h-5 w-5 text-primary-foreground" fill="currentColor" />
       </div>
       <div>
-        <p className="text-base font-semibold tracking-tight">MediAlert</p>
+        <p className="text-base font-semibold tracking-tight">HealthGuard</p>
         <p className="text-[11px] text-muted-foreground">Smart Health Companion</p>
       </div>
     </Link>

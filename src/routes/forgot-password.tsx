@@ -9,7 +9,7 @@ import { auth } from "@/lib/firebase";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/forgot-password")({
-  head: () => ({ meta: [{ title: "Reset password — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Reset password — HealthGuard" }] }),
   component: ForgotPage,
 });
 

@@ -13,7 +13,7 @@ import { Truck, Pill, AlertTriangle, ShoppingCart, CheckCircle2 } from "lucide-r
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/refill")({
-  head: () => ({ meta: [{ title: "Smart Refill — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Smart Refill — HealthGuard" }] }),
   component: RefillPage,
 });
 

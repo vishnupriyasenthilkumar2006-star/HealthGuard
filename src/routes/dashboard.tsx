@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, BarChart, Bar, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — HealthGuard" }] }),
   component: DashboardPage,
 });
 

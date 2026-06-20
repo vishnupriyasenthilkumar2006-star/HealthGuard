@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MediAlert — Never miss a dose again" },
-      { name: "description", content: "MediAlert helps you remember medicines, track adherence, and keep caregivers in the loop." },
-      { property: "og:title", content: "MediAlert — Never miss a dose again" },
+      { title: "HealthGuard — Never miss a dose again" },
+      { name: "description", content: "HealthGuard helps you remember medicines, track adherence, and keep caregivers in the loop." },
+      { property: "og:title", content: "HealthGuard — Never miss a dose again" },
       { property: "og:description", content: "Smart medicine reminders and health tracking for you and your family." },
     ],
   }),
@@ -32,7 +32,7 @@ function Landing() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-primary shadow-card">
             <Heart className="h-5 w-5 text-primary-foreground" fill="currentColor" />
           </div>
-          <span className="text-lg font-semibold tracking-tight">MediAlert</span>
+          <span className="text-lg font-semibold tracking-tight">HealthGuard</span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
           <a href="#features" className="hover:text-foreground">Features</a>
@@ -55,7 +55,7 @@ function Landing() {
             Never miss a dose <span className="bg-gradient-primary bg-clip-text text-transparent">again.</span>
           </h1>
           <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-            MediAlert is your personal medicine companion — smart reminders, a clear health dashboard, and caregiver support all in one place.
+            HealthGuard is your personal medicine companion — smart reminders, a clear health dashboard, and caregiver support all in one place.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg" className="bg-gradient-primary shadow-elevated">
@@ -119,7 +119,7 @@ function Landing() {
 
       <section id="trust" className="mx-auto max-w-5xl px-6 py-20 text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Start taking better care of your health today</h2>
-        <p className="mt-4 text-muted-foreground">Join thousands who trust MediAlert to keep their medication routine on track.</p>
+        <p className="mt-4 text-muted-foreground">Join thousands who trust HealthGuard to keep their medication routine on track.</p>
         <div className="mt-8 flex justify-center gap-3">
           <Button asChild size="lg" className="bg-gradient-primary shadow-elevated">
             <Link to="/register">Create free account</Link>
@@ -130,7 +130,7 @@ function Landing() {
 
       <footer className="border-t bg-card">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-sm text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} MediAlert. Caring for your health.</p>
+          <p>© {new Date().getFullYear()} HealthGuard. Caring for your health.</p>
           <p>Made with care for patients and caregivers.</p>
         </div>
       </footer>

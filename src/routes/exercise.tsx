@@ -12,7 +12,7 @@ import { Activity, Footprints, Plus, Trash2, Target } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/exercise")({
-  head: () => ({ meta: [{ title: "Exercise Tracker — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Exercise Tracker — HealthGuard" }] }),
   component: ExercisePage,
 });
 

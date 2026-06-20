@@ -14,7 +14,7 @@ import {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/prescriptions")({
-  head: () => ({ meta: [{ title: "Prescriptions — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Prescriptions — HealthGuard" }] }),
   component: PrescriptionsPage,
 });
 

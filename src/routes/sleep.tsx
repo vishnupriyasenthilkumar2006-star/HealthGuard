@@ -11,7 +11,7 @@ import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianG
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/sleep")({
-  head: () => ({ meta: [{ title: "Sleep Tracker — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Sleep Tracker — HealthGuard" }] }),
   component: SleepPage,
 });
 

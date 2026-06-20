@@ -10,7 +10,7 @@ import { useStore } from "@/lib/store";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/register")({
-  head: () => ({ meta: [{ title: "Create account — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Create account — HealthGuard" }] }),
   component: RegisterPage,
 });
 
@@ -42,7 +42,7 @@ function RegisterPage() {
       const cred = await createUserWithEmailAndPassword(auth, form.email, form.password);
       await fbUpdateProfile(cred.user, { displayName: form.fullName });
       updateProfile({ fullName: form.fullName, email: form.email });
-      toast.success("Account created! Welcome to MediAlert.");
+      toast.success("Account created! Welcome to HealthGuard.");
       navigate({ to: "/dashboard" });
     } catch (err: any) {
       toast.error(err?.message ?? "Could not create account.");

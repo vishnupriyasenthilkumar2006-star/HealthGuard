@@ -8,7 +8,7 @@ import { Bell, Clock, CheckCircle2, X, Pill } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/reminders")({
-  head: () => ({ meta: [{ title: "Reminders — MediAlert" }] }),
+  head: () => ({ meta: [{ title: "Reminders — HealthGuard" }] }),
   component: RemindersPage,
 });
 
