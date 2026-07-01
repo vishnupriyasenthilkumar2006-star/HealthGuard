@@ -38,7 +38,7 @@ function NotificationsPage() {
       id: `m-${m.id}`, type: "medicine", title: `Time to take ${m.name}`, body: `${m.dosage} · scheduled at ${m.times?.[0] ?? "—"}`, when: `${i + 1}h ago`,
     }));
     appointments.filter((a) => a.status === "upcoming").slice(0, 2).forEach((a) => items.push({
-      id: `a-${a.id}`, type: "appointment", title: `Upcoming: ${a.doctorName}`, body: `${a.date} · ${a.mode ?? "In-person"}`, when: "Today",
+      id: `a-${a.id}`, type: "appointment", title: `Upcoming: ${a.doctor}`, body: `${a.date} · ${a.mode ?? "In-person"}`, when: "Today",
     }));
     const missed = logs.filter((l) => l.status === "missed").length;
     if (missed > 0) items.push({ id: "h-1", type: "health", title: "Adherence drop detected", body: `${missed} missed dose(s) this week. Review your schedule.`, when: "2h ago" });

@@ -38,7 +38,7 @@ function FamilyPage() {
       relation: "Self",
       age: profile.age ?? 0,
       adherence,
-      nextAppointment: upcoming ? `${upcoming.doctorName} · ${upcoming.date}` : undefined,
+      nextAppointment: upcoming ? `${upcoming.doctor} · ${upcoming.date}` : undefined,
       medsCount: medicines.length,
       wellness: adherence,
     };
