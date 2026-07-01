@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu, Package, FileText, Calendar, BarChart3, LifeBuoy, Settings, Droplets, Moon, Activity, Smile, Sparkles, Lock, Trophy, MapPin, Mic, Truck, Wifi, WifiOff, HeartPulse, Stethoscope, Video, IdCard } from "lucide-react";
+import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu, Package, FileText, Calendar, BarChart3, LifeBuoy, Settings, Droplets, Moon, Activity, Smile, Sparkles, Lock, Trophy, MapPin, Mic, Truck, Wifi, WifiOff, HeartPulse, Stethoscope, Video, IdCard, ShieldAlert, Landmark, Store, BellRing } from "lucide-react";
 import { useState, useEffect, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "@/lib/i18n";
@@ -17,6 +17,9 @@ function useNavGroups() {
         { to: "/dashboard", label: t("nav.dashboard"), icon: LayoutDashboard },
         { to: "/calendar", label: t("nav.calendar"), icon: Calendar },
         { to: "/analytics", label: t("nav.analytics"), icon: BarChart3 },
+        { to: "/notifications", label: "Notifications", icon: BellRing },
+        { to: "/family", label: "Family", icon: Users },
+        { to: "/health-risk", label: "Risk Prediction", icon: ShieldAlert },
       ],
     },
     {
@@ -43,6 +46,8 @@ function useNavGroups() {
         { to: "/reminders", label: t("nav.reminders"), icon: Bell },
         { to: "/stock", label: t("nav.stock"), icon: Package },
         { to: "/refill", label: t("nav.refill"), icon: Truck },
+        { to: "/pharmacy", label: "Pharmacy Search", icon: Store },
+        { to: "/schemes", label: "Govt. Health", icon: Landmark },
         { to: "/history", label: t("nav.history"), icon: History },
       ],
     },
