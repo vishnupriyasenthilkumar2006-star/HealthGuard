@@ -16,19 +16,24 @@ import { Route as VaultRouteImport } from './routes/vault'
 import { Route as StockRouteImport } from './routes/stock'
 import { Route as SleepRouteImport } from './routes/sleep'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SchemesRouteImport } from './routes/schemes'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as RemindersRouteImport } from './routes/reminders'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as RefillRouteImport } from './routes/refill'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrescriptionsRouteImport } from './routes/prescriptions'
+import { Route as PharmacyRouteImport } from './routes/pharmacy'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NearbyRouteImport } from './routes/nearby'
 import { Route as MoodRouteImport } from './routes/mood'
 import { Route as MedicinesRouteImport } from './routes/medicines'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as HealthRiskRouteImport } from './routes/health-risk'
 import { Route as HealthCardRouteImport } from './routes/health-card'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as FamilyRouteImport } from './routes/family'
 import { Route as ExerciseRouteImport } from './routes/exercise'
 import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as DoctorsRouteImport } from './routes/doctors'
@@ -76,6 +81,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SchemesRoute = SchemesRouteImport.update({
+  id: '/schemes',
+  path: '/schemes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RewardsRoute = RewardsRouteImport.update({
   id: '/rewards',
   path: '/rewards',
@@ -106,6 +116,16 @@ const PrescriptionsRoute = PrescriptionsRouteImport.update({
   path: '/prescriptions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PharmacyRoute = PharmacyRouteImport.update({
+  id: '/pharmacy',
+  path: '/pharmacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NearbyRoute = NearbyRouteImport.update({
   id: '/nearby',
   path: '/nearby',
@@ -131,6 +151,11 @@ const HistoryRoute = HistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HealthRiskRoute = HealthRiskRouteImport.update({
+  id: '/health-risk',
+  path: '/health-risk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HealthCardRoute = HealthCardRouteImport.update({
   id: '/health-card',
   path: '/health-card',
@@ -139,6 +164,11 @@ const HealthCardRoute = HealthCardRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamilyRoute = FamilyRouteImport.update({
+  id: '/family',
+  path: '/family',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExerciseRoute = ExerciseRouteImport.update({
@@ -209,19 +239,24 @@ export interface FileRoutesByFullPath {
   '/doctors': typeof DoctorsRoute
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
+  '/family': typeof FamilyRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/health-card': typeof HealthCardRoute
+  '/health-risk': typeof HealthRiskRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
   '/mood': typeof MoodRoute
   '/nearby': typeof NearbyRoute
+  '/notifications': typeof NotificationsRoute
+  '/pharmacy': typeof PharmacyRoute
   '/prescriptions': typeof PrescriptionsRoute
   '/profile': typeof ProfileRoute
   '/refill': typeof RefillRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
   '/rewards': typeof RewardsRoute
+  '/schemes': typeof SchemesRoute
   '/settings': typeof SettingsRoute
   '/sleep': typeof SleepRoute
   '/stock': typeof StockRoute
@@ -242,19 +277,24 @@ export interface FileRoutesByTo {
   '/doctors': typeof DoctorsRoute
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
+  '/family': typeof FamilyRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/health-card': typeof HealthCardRoute
+  '/health-risk': typeof HealthRiskRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
   '/mood': typeof MoodRoute
   '/nearby': typeof NearbyRoute
+  '/notifications': typeof NotificationsRoute
+  '/pharmacy': typeof PharmacyRoute
   '/prescriptions': typeof PrescriptionsRoute
   '/profile': typeof ProfileRoute
   '/refill': typeof RefillRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
   '/rewards': typeof RewardsRoute
+  '/schemes': typeof SchemesRoute
   '/settings': typeof SettingsRoute
   '/sleep': typeof SleepRoute
   '/stock': typeof StockRoute
@@ -276,19 +316,24 @@ export interface FileRoutesById {
   '/doctors': typeof DoctorsRoute
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
+  '/family': typeof FamilyRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/health-card': typeof HealthCardRoute
+  '/health-risk': typeof HealthRiskRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
   '/mood': typeof MoodRoute
   '/nearby': typeof NearbyRoute
+  '/notifications': typeof NotificationsRoute
+  '/pharmacy': typeof PharmacyRoute
   '/prescriptions': typeof PrescriptionsRoute
   '/profile': typeof ProfileRoute
   '/refill': typeof RefillRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
   '/rewards': typeof RewardsRoute
+  '/schemes': typeof SchemesRoute
   '/settings': typeof SettingsRoute
   '/sleep': typeof SleepRoute
   '/stock': typeof StockRoute
@@ -311,19 +356,24 @@ export interface FileRouteTypes {
     | '/doctors'
     | '/emergency'
     | '/exercise'
+    | '/family'
     | '/forgot-password'
     | '/health-card'
+    | '/health-risk'
     | '/history'
     | '/login'
     | '/medicines'
     | '/mood'
     | '/nearby'
+    | '/notifications'
+    | '/pharmacy'
     | '/prescriptions'
     | '/profile'
     | '/refill'
     | '/register'
     | '/reminders'
     | '/rewards'
+    | '/schemes'
     | '/settings'
     | '/sleep'
     | '/stock'
@@ -344,19 +394,24 @@ export interface FileRouteTypes {
     | '/doctors'
     | '/emergency'
     | '/exercise'
+    | '/family'
     | '/forgot-password'
     | '/health-card'
+    | '/health-risk'
     | '/history'
     | '/login'
     | '/medicines'
     | '/mood'
     | '/nearby'
+    | '/notifications'
+    | '/pharmacy'
     | '/prescriptions'
     | '/profile'
     | '/refill'
     | '/register'
     | '/reminders'
     | '/rewards'
+    | '/schemes'
     | '/settings'
     | '/sleep'
     | '/stock'
@@ -377,19 +432,24 @@ export interface FileRouteTypes {
     | '/doctors'
     | '/emergency'
     | '/exercise'
+    | '/family'
     | '/forgot-password'
     | '/health-card'
+    | '/health-risk'
     | '/history'
     | '/login'
     | '/medicines'
     | '/mood'
     | '/nearby'
+    | '/notifications'
+    | '/pharmacy'
     | '/prescriptions'
     | '/profile'
     | '/refill'
     | '/register'
     | '/reminders'
     | '/rewards'
+    | '/schemes'
     | '/settings'
     | '/sleep'
     | '/stock'
@@ -411,19 +471,24 @@ export interface RootRouteChildren {
   DoctorsRoute: typeof DoctorsRoute
   EmergencyRoute: typeof EmergencyRoute
   ExerciseRoute: typeof ExerciseRoute
+  FamilyRoute: typeof FamilyRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HealthCardRoute: typeof HealthCardRoute
+  HealthRiskRoute: typeof HealthRiskRoute
   HistoryRoute: typeof HistoryRoute
   LoginRoute: typeof LoginRoute
   MedicinesRoute: typeof MedicinesRoute
   MoodRoute: typeof MoodRoute
   NearbyRoute: typeof NearbyRoute
+  NotificationsRoute: typeof NotificationsRoute
+  PharmacyRoute: typeof PharmacyRoute
   PrescriptionsRoute: typeof PrescriptionsRoute
   ProfileRoute: typeof ProfileRoute
   RefillRoute: typeof RefillRoute
   RegisterRoute: typeof RegisterRoute
   RemindersRoute: typeof RemindersRoute
   RewardsRoute: typeof RewardsRoute
+  SchemesRoute: typeof SchemesRoute
   SettingsRoute: typeof SettingsRoute
   SleepRoute: typeof SleepRoute
   StockRoute: typeof StockRoute
@@ -484,6 +549,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/schemes': {
+      id: '/schemes'
+      path: '/schemes'
+      fullPath: '/schemes'
+      preLoaderRoute: typeof SchemesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rewards': {
       id: '/rewards'
       path: '/rewards'
@@ -526,6 +598,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrescriptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pharmacy': {
+      id: '/pharmacy'
+      path: '/pharmacy'
+      fullPath: '/pharmacy'
+      preLoaderRoute: typeof PharmacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nearby': {
       id: '/nearby'
       path: '/nearby'
@@ -561,6 +647,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/health-risk': {
+      id: '/health-risk'
+      path: '/health-risk'
+      fullPath: '/health-risk'
+      preLoaderRoute: typeof HealthRiskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/health-card': {
       id: '/health-card'
       path: '/health-card'
@@ -573,6 +666,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/family': {
+      id: '/family'
+      path: '/family'
+      fullPath: '/family'
+      preLoaderRoute: typeof FamilyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/exercise': {
@@ -667,19 +767,24 @@ const rootRouteChildren: RootRouteChildren = {
   DoctorsRoute: DoctorsRoute,
   EmergencyRoute: EmergencyRoute,
   ExerciseRoute: ExerciseRoute,
+  FamilyRoute: FamilyRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HealthCardRoute: HealthCardRoute,
+  HealthRiskRoute: HealthRiskRoute,
   HistoryRoute: HistoryRoute,
   LoginRoute: LoginRoute,
   MedicinesRoute: MedicinesRoute,
   MoodRoute: MoodRoute,
   NearbyRoute: NearbyRoute,
+  NotificationsRoute: NotificationsRoute,
+  PharmacyRoute: PharmacyRoute,
   PrescriptionsRoute: PrescriptionsRoute,
   ProfileRoute: ProfileRoute,
   RefillRoute: RefillRoute,
   RegisterRoute: RegisterRoute,
   RemindersRoute: RemindersRoute,
   RewardsRoute: RewardsRoute,
+  SchemesRoute: SchemesRoute,
   SettingsRoute: SettingsRoute,
   SleepRoute: SleepRoute,
   StockRoute: StockRoute,
