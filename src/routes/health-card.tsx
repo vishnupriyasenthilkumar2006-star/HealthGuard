@@ -59,7 +59,8 @@ function HealthCardPage() {
   };
 
   return (
-    <AppShell title="Digital Health Card" subtitle="Scan the QR for instant access to critical medical info">
+    <AppShell title="Digital Health Card">
+      <p className="mb-4 text-sm text-muted-foreground">Scan the QR for instant access to critical medical info.</p>
       <div className="mx-auto max-w-3xl space-y-4">
         <div className="flex flex-wrap gap-2 print:hidden">
           <Button onClick={handlePrint} variant="outline"><Printer className="mr-2 h-4 w-4" />Print</Button>
