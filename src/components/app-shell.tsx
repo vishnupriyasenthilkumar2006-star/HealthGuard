@@ -46,6 +46,8 @@ function useNavGroups() {
         { to: "/reminders", label: t("nav.reminders"), icon: Bell },
         { to: "/stock", label: t("nav.stock"), icon: Package },
         { to: "/refill", label: t("nav.refill"), icon: Truck },
+        { to: "/pharmacy", label: "Pharmacy Search", icon: Store },
+        { to: "/schemes", label: "Govt. Health", icon: Landmark },
         { to: "/history", label: t("nav.history"), icon: History },
       ],
     },
