@@ -27,6 +27,7 @@ import { Route as MoodRouteImport } from './routes/mood'
 import { Route as MedicinesRouteImport } from './routes/medicines'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as HealthCardRouteImport } from './routes/health-card'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ExerciseRouteImport } from './routes/exercise'
 import { Route as EmergencyRouteImport } from './routes/emergency'
@@ -130,6 +131,11 @@ const HistoryRoute = HistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HealthCardRoute = HealthCardRouteImport.update({
+  id: '/health-card',
+  path: '/health-card',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
@@ -204,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/health-card': typeof HealthCardRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
@@ -236,6 +243,7 @@ export interface FileRoutesByTo {
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/health-card': typeof HealthCardRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
@@ -269,6 +277,7 @@ export interface FileRoutesById {
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/health-card': typeof HealthCardRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/medicines': typeof MedicinesRoute
@@ -303,6 +312,7 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/exercise'
     | '/forgot-password'
+    | '/health-card'
     | '/history'
     | '/login'
     | '/medicines'
@@ -335,6 +345,7 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/exercise'
     | '/forgot-password'
+    | '/health-card'
     | '/history'
     | '/login'
     | '/medicines'
@@ -367,6 +378,7 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/exercise'
     | '/forgot-password'
+    | '/health-card'
     | '/history'
     | '/login'
     | '/medicines'
@@ -400,6 +412,7 @@ export interface RootRouteChildren {
   EmergencyRoute: typeof EmergencyRoute
   ExerciseRoute: typeof ExerciseRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  HealthCardRoute: typeof HealthCardRoute
   HistoryRoute: typeof HistoryRoute
   LoginRoute: typeof LoginRoute
   MedicinesRoute: typeof MedicinesRoute
@@ -548,6 +561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/health-card': {
+      id: '/health-card'
+      path: '/health-card'
+      fullPath: '/health-card'
+      preLoaderRoute: typeof HealthCardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/forgot-password': {
       id: '/forgot-password'
       path: '/forgot-password'
@@ -648,6 +668,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmergencyRoute: EmergencyRoute,
   ExerciseRoute: ExerciseRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  HealthCardRoute: HealthCardRoute,
   HistoryRoute: HistoryRoute,
   LoginRoute: LoginRoute,
   MedicinesRoute: MedicinesRoute,
@@ -670,13 +691,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
