@@ -14,7 +14,461 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      app_state: {
+        Row: {
+          data: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          data?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          data?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      caregiver_details: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_emergency: boolean | null
+          name: string
+          phone: string | null
+          relation: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          name: string
+          phone?: string | null
+          relation?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          name?: string
+          phone?: string | null
+          relation?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      doctor_appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string
+          doctor: string
+          id: string
+          location: string | null
+          mode: string | null
+          notes: string | null
+          reason: string | null
+          specialty: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          created_at?: string
+          doctor: string
+          id?: string
+          location?: string | null
+          mode?: string | null
+          notes?: string | null
+          reason?: string | null
+          specialty?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          created_at?: string
+          doctor?: string
+          id?: string
+          location?: string | null
+          mode?: string | null
+          notes?: string | null
+          reason?: string | null
+          specialty?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_emergency: boolean | null
+          name: string
+          phone: string
+          relation: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          name: string
+          phone: string
+          relation?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          name?: string
+          phone?: string
+          relation?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      health_records: {
+        Row: {
+          category: string | null
+          created_at: string
+          file_name: string | null
+          file_size: number | null
+          file_type: string | null
+          id: string
+          notes: string | null
+          record_date: string | null
+          storage_path: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          notes?: string | null
+          record_date?: string | null
+          storage_path?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          notes?: string | null
+          record_date?: string | null
+          storage_path?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      medicine_reminders: {
+        Row: {
+          acknowledged: boolean | null
+          created_at: string
+          id: string
+          medicine_id: string | null
+          reminder_date: string
+          reminder_time: string
+          snoozed_until: string | null
+          status: string
+          taken_at: string | null
+          user_id: string
+        }
+        Insert: {
+          acknowledged?: boolean | null
+          created_at?: string
+          id?: string
+          medicine_id?: string | null
+          reminder_date: string
+          reminder_time: string
+          snoozed_until?: string | null
+          status?: string
+          taken_at?: string | null
+          user_id: string
+        }
+        Update: {
+          acknowledged?: boolean | null
+          created_at?: string
+          id?: string
+          medicine_id?: string | null
+          reminder_date?: string
+          reminder_time?: string
+          snoozed_until?: string | null
+          status?: string
+          taken_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medicine_reminders_medicine_id_fkey"
+            columns: ["medicine_id"]
+            isOneToOne: false
+            referencedRelation: "medicines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medicines: {
+        Row: {
+          alarm_sound: string | null
+          color: string | null
+          created_at: string
+          critical: boolean | null
+          dosage: string | null
+          end_date: string | null
+          id: string
+          low_stock_threshold: number | null
+          name: string
+          notes: string | null
+          start_date: string | null
+          stock: number | null
+          times: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alarm_sound?: string | null
+          color?: string | null
+          created_at?: string
+          critical?: boolean | null
+          dosage?: string | null
+          end_date?: string | null
+          id?: string
+          low_stock_threshold?: number | null
+          name: string
+          notes?: string | null
+          start_date?: string | null
+          stock?: number | null
+          times?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alarm_sound?: string | null
+          color?: string | null
+          created_at?: string
+          critical?: boolean | null
+          dosage?: string | null
+          end_date?: string | null
+          id?: string
+          low_stock_threshold?: number | null
+          name?: string
+          notes?: string | null
+          start_date?: string | null
+          stock?: number | null
+          times?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          message: string | null
+          read: boolean | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          read?: boolean | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          read?: boolean | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          age: number | null
+          allergies: string | null
+          avatar_url: string | null
+          blood_group: string | null
+          conditions: string | null
+          created_at: string
+          email: string | null
+          emergency_phone: string | null
+          full_name: string | null
+          gender: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          age?: number | null
+          allergies?: string | null
+          avatar_url?: string | null
+          blood_group?: string | null
+          conditions?: string | null
+          created_at?: string
+          email?: string | null
+          emergency_phone?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          age?: number | null
+          allergies?: string | null
+          avatar_url?: string | null
+          blood_group?: string | null
+          conditions?: string | null
+          created_at?: string
+          email?: string | null
+          emergency_phone?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      wellness_exercise: {
+        Row: {
+          id: string
+          log_date: string
+          minutes: number | null
+          steps: number | null
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          log_date: string
+          minutes?: number | null
+          steps?: number | null
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          log_date?: string
+          minutes?: number | null
+          steps?: number | null
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_mood: {
+        Row: {
+          id: string
+          log_date: string
+          mood: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          log_date: string
+          mood: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          log_date?: string
+          mood?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_sleep: {
+        Row: {
+          hours: number | null
+          id: string
+          log_date: string
+          quality: number | null
+          sleep_time: string | null
+          user_id: string
+          wake_time: string | null
+        }
+        Insert: {
+          hours?: number | null
+          id?: string
+          log_date: string
+          quality?: number | null
+          sleep_time?: string | null
+          user_id: string
+          wake_time?: string | null
+        }
+        Update: {
+          hours?: number | null
+          id?: string
+          log_date?: string
+          quality?: number | null
+          sleep_time?: string | null
+          user_id?: string
+          wake_time?: string | null
+        }
+        Relationships: []
+      }
+      wellness_water: {
+        Row: {
+          glasses: number
+          id: string
+          log_date: string
+          user_id: string
+        }
+        Insert: {
+          glasses?: number
+          id?: string
+          log_date: string
+          user_id: string
+        }
+        Update: {
+          glasses?: number
+          id?: string
+          log_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
