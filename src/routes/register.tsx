@@ -4,8 +4,7 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createUserWithEmailAndPassword, updateProfile as fbUpdateProfile } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { supabase } from "@/integrations/supabase/client";
 import { useStore } from "@/lib/store";
 import { toast } from "sonner";
 
@@ -38,17 +37,22 @@ function RegisterPage() {
       return;
     }
     setLoading(true);
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, form.email, form.password);
-      await fbUpdateProfile(cred.user, { displayName: form.fullName });
-      updateProfile({ fullName: form.fullName, email: form.email });
-      toast.success("Account created! Welcome to HealthGuard.");
-      navigate({ to: "/dashboard" });
-    } catch (err: any) {
-      toast.error(err?.message ?? "Could not create account.");
-    } finally {
-      setLoading(false);
+    const { error } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+        data: { full_name: form.fullName },
+      },
+    });
+    setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      return;
     }
+    updateProfile({ fullName: form.fullName, email: form.email });
+    toast.success("Account created! Welcome to HealthGuard.");
+    navigate({ to: "/dashboard" });
   };
 
   return (

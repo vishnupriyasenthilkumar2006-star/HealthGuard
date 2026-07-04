@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { onAuthStateChanged, signOut, type User } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db } from "./firebase";
+import { supabase } from "@/integrations/supabase/client";
 
 export type AlarmSound = "chime" | "beep" | "bell" | "gentle" | "urgent";
 
@@ -325,23 +323,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const loadingUidRef = useRef<string | null>(null);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Subscribe to Firebase auth state and load/seed user's Firestore doc.
+  // Subscribe to Supabase auth state and load/seed the user's app_state row.
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user: User | null) => {
-      if (!user) {
-        setUid(null);
-        setIsAuthed(false);
-        setHydrated(true);
-        return;
+    let mounted = true;
+
+    const loadForUser = async (userId: string, email: string | null | undefined, displayName: string | null | undefined) => {
+      loadingUidRef.current = userId;
+      if (mounted) {
+        setUid(userId);
+        setIsAuthed(true);
       }
-      loadingUidRef.current = user.uid;
-      setUid(user.uid);
-      setIsAuthed(true);
       try {
-        const ref = doc(db, "users", user.uid);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          const s = snap.data() as any;
+        const { data: row } = await supabase
+          .from("app_state")
+          .select("data")
+          .eq("user_id", userId)
+          .maybeSingle();
+
+        if (row?.data) {
+          const s = row.data as any;
           if (s.medicines) setMedicines(s.medicines);
           if (s.logs) setLogs(s.logs);
           if (s.caregivers) setCaregivers(s.caregivers);
@@ -358,12 +358,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           if (s.prefs) setPrefs({ ...defaultPrefs, ...s.prefs });
           if (s.rewards) setRewards({ ...defaultRewards, ...s.rewards });
         } else {
-          // Seed a new user document with starter data.
+          const seedProfile = {
+            ...defaultState.profile,
+            email: email ?? defaultState.profile.email,
+            fullName: displayName ?? defaultState.profile.fullName,
+          };
           const seed = {
             medicines: defaultState.medicines,
             logs: defaultState.logs,
             caregivers: defaultState.caregivers,
-            profile: { ...defaultState.profile, email: user.email ?? defaultState.profile.email, fullName: user.displayName ?? defaultState.profile.fullName },
+            profile: seedProfile,
             prescriptions: defaultState.prescriptions,
             appointments: defaultState.appointments,
             alarmSettings: defaultAlarmSettings,
@@ -376,20 +380,52 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             prefs: defaultPrefs,
             rewards: defaultRewards,
           };
-          setProfile(seed.profile);
-          await setDoc(ref, seed);
+          if (mounted) setProfile(seedProfile);
+          await supabase.from("app_state").upsert({ user_id: userId, data: seed as any });
         }
       } catch (err) {
-        console.error("Failed to load user data from Firestore", err);
+        console.error("Failed to load user data", err);
       } finally {
         loadingUidRef.current = null;
-        setHydrated(true);
+        if (mounted) setHydrated(true);
+      }
+    };
+
+    supabase.auth.getSession().then(({ data }) => {
+      const user = data.session?.user;
+      if (!user) {
+        if (mounted) {
+          setUid(null);
+          setIsAuthed(false);
+          setHydrated(true);
+        }
+        return;
+      }
+      void loadForUser(user.id, user.email, (user.user_metadata as any)?.full_name);
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      const user = session?.user;
+      if (!user) {
+        if (mounted) {
+          setUid(null);
+          setIsAuthed(false);
+          setHydrated(true);
+        }
+        return;
+      }
+      if (event === "SIGNED_IN" || event === "USER_UPDATED") {
+        void loadForUser(user.id, user.email, (user.user_metadata as any)?.full_name);
       }
     });
-    return () => unsub();
+
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
-  // Debounced persistence to Firestore whenever data changes.
+  // Debounced persistence to Supabase whenever data changes.
   useEffect(() => {
     if (!hydrated || !uid || loadingUidRef.current === uid) return;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
@@ -403,9 +439,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         refills, prefs, rewards,
         updatedAt: Date.now(),
       };
-      setDoc(doc(db, "users", uid), payload, { merge: true }).catch((err) =>
-        console.error("Failed to save user data to Firestore", err),
-      );
+      supabase
+        .from("app_state")
+        .upsert({ user_id: uid, data: payload as any })
+        .then(({ error }) => {
+          if (error) console.error("Failed to save user data", error);
+        });
     }, 600);
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
@@ -488,7 +527,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     updatePrefs: (p) => setPrefs((prev) => ({ ...prev, ...p })),
     awardPoints: (n, badge) => setRewards((r) => ({ ...r, points: r.points + n, badges: badge && !r.badges.includes(badge) ? [...r.badges, badge] : r.badges })),
     login: () => setIsAuthed(true),
-    logout: () => { signOut(auth).catch(() => {}); setIsAuthed(false); },
+    logout: () => { supabase.auth.signOut().catch(() => {}); setIsAuthed(false); },
   }), [medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards]);
 
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;

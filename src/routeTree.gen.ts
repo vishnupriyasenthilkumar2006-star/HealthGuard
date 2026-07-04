@@ -18,6 +18,7 @@ import { Route as SleepRouteImport } from './routes/sleep'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SchemesRouteImport } from './routes/schemes'
 import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RemindersRouteImport } from './routes/reminders'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as RefillRouteImport } from './routes/refill'
@@ -89,6 +90,11 @@ const SchemesRoute = SchemesRouteImport.update({
 const RewardsRoute = RewardsRouteImport.update({
   id: '/rewards',
   path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RemindersRoute = RemindersRouteImport.update({
@@ -255,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/refill': typeof RefillRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rewards': typeof RewardsRoute
   '/schemes': typeof SchemesRoute
   '/settings': typeof SettingsRoute
@@ -293,6 +300,7 @@ export interface FileRoutesByTo {
   '/refill': typeof RefillRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rewards': typeof RewardsRoute
   '/schemes': typeof SchemesRoute
   '/settings': typeof SettingsRoute
@@ -332,6 +340,7 @@ export interface FileRoutesById {
   '/refill': typeof RefillRoute
   '/register': typeof RegisterRoute
   '/reminders': typeof RemindersRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rewards': typeof RewardsRoute
   '/schemes': typeof SchemesRoute
   '/settings': typeof SettingsRoute
@@ -372,6 +381,7 @@ export interface FileRouteTypes {
     | '/refill'
     | '/register'
     | '/reminders'
+    | '/reset-password'
     | '/rewards'
     | '/schemes'
     | '/settings'
@@ -410,6 +420,7 @@ export interface FileRouteTypes {
     | '/refill'
     | '/register'
     | '/reminders'
+    | '/reset-password'
     | '/rewards'
     | '/schemes'
     | '/settings'
@@ -448,6 +459,7 @@ export interface FileRouteTypes {
     | '/refill'
     | '/register'
     | '/reminders'
+    | '/reset-password'
     | '/rewards'
     | '/schemes'
     | '/settings'
@@ -487,6 +499,7 @@ export interface RootRouteChildren {
   RefillRoute: typeof RefillRoute
   RegisterRoute: typeof RegisterRoute
   RemindersRoute: typeof RemindersRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RewardsRoute: typeof RewardsRoute
   SchemesRoute: typeof SchemesRoute
   SettingsRoute: typeof SettingsRoute
@@ -561,6 +574,13 @@ declare module '@tanstack/react-router' {
       path: '/rewards'
       fullPath: '/rewards'
       preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reminders': {
@@ -783,6 +803,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefillRoute: RefillRoute,
   RegisterRoute: RegisterRoute,
   RemindersRoute: RemindersRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RewardsRoute: RewardsRoute,
   SchemesRoute: SchemesRoute,
   SettingsRoute: SettingsRoute,
