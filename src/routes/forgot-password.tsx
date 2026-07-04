@@ -4,8 +4,7 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/forgot-password")({
@@ -22,15 +21,16 @@ function ForgotPage() {
     e.preventDefault();
     if (!email) return toast.error("Enter your email.");
     setLoading(true);
-    try {
-      await sendPasswordResetEmail(auth, email);
-      setSent(true);
-      toast.success("Password reset email sent.");
-    } catch (err: any) {
-      toast.error(err?.message ?? "Could not send reset email.");
-    } finally {
-      setLoading(false);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      return;
     }
+    setSent(true);
+    toast.success("Password reset email sent.");
   };
 
   return (

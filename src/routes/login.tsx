@@ -4,8 +4,7 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
@@ -26,15 +25,14 @@ function LoginPage() {
       return;
     }
     setLoading(true);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast.success("Welcome back!");
-      navigate({ to: "/dashboard" });
-    } catch (err: any) {
-      toast.error(err?.message ?? "Sign in failed.");
-    } finally {
-      setLoading(false);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      return;
     }
+    toast.success("Welcome back!");
+    navigate({ to: "/dashboard" });
   };
 
   return (
