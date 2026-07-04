@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { onAuthStateChanged, signOut, type User } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db } from "./firebase";
+import { supabase } from "@/integrations/supabase/client";
 
 export type AlarmSound = "chime" | "beep" | "bell" | "gentle" | "urgent";
 
