@@ -415,7 +415,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   };
 
   const value: Store = useMemo(() => ({
-    medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed,
+    medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, hydrated,
+
     waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards,
     addMedicine: (m) => setMedicines((p) => [...p, { ...m, id: crypto.randomUUID() }]),
     updateMedicine: (id, m) => setMedicines((p) => p.map((x) => (x.id === id ? { ...x, ...m } : x))),
