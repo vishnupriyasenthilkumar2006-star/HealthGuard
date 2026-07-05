@@ -114,7 +114,7 @@ export function WellnessReminderManager() {
     tick();
     const id = window.setInterval(tick, 30_000);
     return () => window.clearInterval(id);
-  }, [prefs, addWater, exerciseLogs, moodLogs]);
+  }, [isAuthed, prefs, addWater, exerciseLogs, moodLogs]);
 
   return null;
 }
