@@ -146,6 +146,8 @@ type Store = {
   appointments: Appointment[];
   alarmSettings: AlarmSettings;
   isAuthed: boolean;
+  hydrated: boolean;
+
   waterLogs: WaterLog[];
   sleepLogs: SleepLog[];
   exerciseLogs: ExerciseLog[];
@@ -220,78 +222,31 @@ const defaultPrefs: Preferences = {
 };
 
 const defaultRewards: Rewards = {
-  points: 240,
-  badges: ["First Dose", "3-Day Streak", "Hydration Hero"],
-  streak: 5,
+  points: 0,
+  badges: [],
+  streak: 0,
+};
+
+const emptyProfile: Profile = {
+  fullName: "",
+  email: "",
 };
 
 const defaultState = {
-  medicines: [
-    { id: "m1", name: "Metformin", dosage: "500 mg", startDate: inDays(-10), endDate: inDays(30), times: ["08:00", "20:00"], notes: "Take with meals", color: "chart-1", stock: 14, lowStockThreshold: 10, alarmSound: "chime" as AlarmSound, critical: false },
-    { id: "m2", name: "Vitamin D3", dosage: "1000 IU", startDate: inDays(-30), endDate: inDays(60), times: ["09:00"], notes: "Once daily after breakfast", color: "chart-3", stock: 42, lowStockThreshold: 7, alarmSound: "gentle" as AlarmSound, critical: false },
-    { id: "m3", name: "Atorvastatin", dosage: "10 mg", startDate: inDays(-5), endDate: inDays(90), times: ["21:00"], notes: "At bedtime", color: "chart-2", stock: 6, lowStockThreshold: 10, alarmSound: "urgent" as AlarmSound, critical: true },
-  ] as Medicine[],
-  logs: [
-    { id: "l1", medicineId: "m1", date: today, time: "08:00", status: "taken", takenAt: new Date().toISOString() },
-    { id: "l2", medicineId: "m2", date: today, time: "09:00", status: "taken", takenAt: new Date().toISOString() },
-    { id: "l3", medicineId: "m1", date: inDays(-1), time: "20:00", status: "missed" },
-    { id: "l4", medicineId: "m3", date: inDays(-1), time: "21:00", status: "taken" },
-    { id: "l5", medicineId: "m1", date: inDays(-2), time: "08:00", status: "taken" },
-    { id: "l6", medicineId: "m1", date: inDays(-2), time: "20:00", status: "taken" },
-  ] as DoseLog[],
-  caregivers: [
-    { id: "c1", name: "Sarah Johnson", relation: "Daughter", phone: "+1 555-0142", email: "sarah@example.com", isEmergency: true },
-    { id: "c2", name: "Dr. Robert Lee", relation: "Family Doctor", phone: "+1 555-0199", email: "dr.lee@clinic.com" },
-  ] as Caregiver[],
-  profile: {
-    fullName: "Alex Morgan",
-    email: "alex.morgan@example.com",
-    age: 58,
-    gender: "Female",
-    bloodGroup: "O+",
-    allergies: "Penicillin",
-    conditions: "Type 2 Diabetes, High Cholesterol",
-    emergencyPhone: "+1 555-0142",
-    address: "1280 Oak Street, Portland, OR",
-  } as Profile,
-  prescriptions: [
-    { id: "p1", title: "Diabetes follow-up Rx", doctor: "Dr. Robert Lee", date: inDays(-10), fileName: "rx-diabetes.pdf", fileType: "application/pdf", fileSize: 124000, dataUrl: "", notes: "Continue metformin 500mg BD" },
-  ] as Prescription[],
-  appointments: [
-    { id: "a1", doctor: "Dr. Robert Lee", specialty: "General Physician", date: inDays(3), time: "10:30", location: "Bayside Clinic, Room 204", notes: "Quarterly check-up", status: "upcoming" as const },
-    { id: "a2", doctor: "Dr. Priya Patel", specialty: "Endocrinologist", date: inDays(-14), time: "14:00", location: "Metro Medical Center", status: "completed" as const },
-  ] as Appointment[],
-  waterLogs: [
-    { date: today, glasses: 4 },
-    { date: inDays(-1), glasses: 7 },
-    { date: inDays(-2), glasses: 6 },
-    { date: inDays(-3), glasses: 8 },
-    { date: inDays(-4), glasses: 5 },
-    { date: inDays(-5), glasses: 6 },
-    { date: inDays(-6), glasses: 7 },
-  ] as WaterLog[],
-  sleepLogs: [
-    { id: "s1", date: inDays(-1), sleepTime: "23:15", wakeTime: "06:45", hours: 7.5, quality: 4 },
-    { id: "s2", date: inDays(-2), sleepTime: "00:10", wakeTime: "07:00", hours: 6.8, quality: 3 },
-    { id: "s3", date: inDays(-3), sleepTime: "22:45", wakeTime: "06:30", hours: 7.75, quality: 5 },
-  ] as SleepLog[],
-  exerciseLogs: [
-    { id: "e1", date: today, type: "Walk", minutes: 30, steps: 3200 },
-    { id: "e2", date: inDays(-1), type: "Yoga", minutes: 20 },
-    { id: "e3", date: inDays(-2), type: "Walk", minutes: 45, steps: 4800 },
-  ] as ExerciseLog[],
-  moodLogs: [
-    { date: today, mood: "happy" as Mood },
-    { date: inDays(-1), mood: "normal" as Mood },
-    { date: inDays(-2), mood: "tired" as Mood },
-    { date: inDays(-3), mood: "happy" as Mood },
-  ] as MoodLog[],
-  vault: [
-    { id: "v1", title: "Blood Test Report", category: "lab" as VaultCategory, date: inDays(-20), fileName: "blood-test.pdf", fileType: "application/pdf", fileSize: 220000, dataUrl: "" },
-    { id: "v2", title: "Covid Vaccination Certificate", category: "vaccination" as VaultCategory, date: inDays(-200), fileName: "covid-cert.pdf", fileType: "application/pdf", fileSize: 110000, dataUrl: "" },
-  ] as VaultRecord[],
+  medicines: [] as Medicine[],
+  logs: [] as DoseLog[],
+  caregivers: [] as Caregiver[],
+  profile: emptyProfile,
+  prescriptions: [] as Prescription[],
+  appointments: [] as Appointment[],
+  waterLogs: [] as WaterLog[],
+  sleepLogs: [] as SleepLog[],
+  exerciseLogs: [] as ExerciseLog[],
+  moodLogs: [] as MoodLog[],
+  vault: [] as VaultRecord[],
   refills: [] as RefillRequest[],
 };
+
 
 const StoreCtx = createContext<Store | null>(null);
 
@@ -323,7 +278,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const loadingUidRef = useRef<string | null>(null);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Subscribe to Supabase auth state and load/seed the user's app_state row.
+  const resetState = () => {
+    setMedicines([]);
+    setLogs([]);
+    setCaregivers([]);
+    setProfile(emptyProfile);
+    setPrescriptions([]);
+    setAppointments([]);
+    setAlarmSettings(defaultAlarmSettings);
+    setWaterLogs([]);
+    setSleepLogs([]);
+    setExerciseLogs([]);
+    setMoodLogs([]);
+    setVault([]);
+    setRefills([]);
+    setPrefs(defaultPrefs);
+    setRewards(defaultRewards);
+  };
+
+  // Subscribe to Supabase auth state and load the user's app_state row.
   useEffect(() => {
     let mounted = true;
 
@@ -342,46 +315,33 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
         if (row?.data) {
           const s = row.data as any;
-          if (s.medicines) setMedicines(s.medicines);
-          if (s.logs) setLogs(s.logs);
-          if (s.caregivers) setCaregivers(s.caregivers);
-          if (s.profile) setProfile(s.profile);
-          if (s.prescriptions) setPrescriptions(s.prescriptions);
-          if (s.appointments) setAppointments(s.appointments);
-          if (s.alarmSettings) setAlarmSettings({ ...defaultAlarmSettings, ...s.alarmSettings });
-          if (s.waterLogs) setWaterLogs(s.waterLogs);
-          if (s.sleepLogs) setSleepLogs(s.sleepLogs);
-          if (s.exerciseLogs) setExerciseLogs(s.exerciseLogs);
-          if (s.moodLogs) setMoodLogs(s.moodLogs);
-          if (s.vault) setVault(s.vault);
-          if (s.refills) setRefills(s.refills);
-          if (s.prefs) setPrefs({ ...defaultPrefs, ...s.prefs });
-          if (s.rewards) setRewards({ ...defaultRewards, ...s.rewards });
+          setMedicines(s.medicines ?? []);
+          setLogs(s.logs ?? []);
+          setCaregivers(s.caregivers ?? []);
+          setProfile(s.profile ?? { ...emptyProfile, email: email ?? "", fullName: displayName ?? "" });
+          setPrescriptions(s.prescriptions ?? []);
+          setAppointments(s.appointments ?? []);
+          setAlarmSettings({ ...defaultAlarmSettings, ...(s.alarmSettings ?? {}) });
+          setWaterLogs(s.waterLogs ?? []);
+          setSleepLogs(s.sleepLogs ?? []);
+          setExerciseLogs(s.exerciseLogs ?? []);
+          setMoodLogs(s.moodLogs ?? []);
+          setVault(s.vault ?? []);
+          setRefills(s.refills ?? []);
+          setPrefs({ ...defaultPrefs, ...(s.prefs ?? {}) });
+          setRewards({ ...defaultRewards, ...(s.rewards ?? {}) });
         } else {
-          const seedProfile = {
-            ...defaultState.profile,
-            email: email ?? defaultState.profile.email,
-            fullName: displayName ?? defaultState.profile.fullName,
-          };
-          const seed = {
-            medicines: defaultState.medicines,
-            logs: defaultState.logs,
-            caregivers: defaultState.caregivers,
-            profile: seedProfile,
-            prescriptions: defaultState.prescriptions,
-            appointments: defaultState.appointments,
-            alarmSettings: defaultAlarmSettings,
-            waterLogs: defaultState.waterLogs,
-            sleepLogs: defaultState.sleepLogs,
-            exerciseLogs: defaultState.exerciseLogs,
-            moodLogs: defaultState.moodLogs,
-            vault: defaultState.vault,
-            refills: defaultState.refills,
-            prefs: defaultPrefs,
-            rewards: defaultRewards,
+          // Brand new user — empty state, only seed profile identity fields.
+          const seedProfile: Profile = {
+            ...emptyProfile,
+            email: email ?? "",
+            fullName: displayName ?? "",
           };
           if (mounted) setProfile(seedProfile);
-          await supabase.from("app_state").upsert({ user_id: userId, data: seed as any });
+          await supabase.from("app_state").upsert({
+            user_id: userId,
+            data: { profile: seedProfile, prefs: defaultPrefs, rewards: defaultRewards } as any,
+          });
         }
       } catch (err) {
         console.error("Failed to load user data", err);
@@ -391,29 +351,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }
     };
 
+    const handleNoUser = () => {
+      if (!mounted) return;
+      setUid(null);
+      setIsAuthed(false);
+      resetState();
+      setHydrated(true);
+    };
+
     supabase.auth.getSession().then(({ data }) => {
       const user = data.session?.user;
-      if (!user) {
-        if (mounted) {
-          setUid(null);
-          setIsAuthed(false);
-          setHydrated(true);
-        }
-        return;
-      }
+      if (!user) return handleNoUser();
       void loadForUser(user.id, user.email, (user.user_metadata as any)?.full_name);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       const user = session?.user;
-      if (!user) {
-        if (mounted) {
-          setUid(null);
-          setIsAuthed(false);
-          setHydrated(true);
-        }
-        return;
-      }
+      if (!user) return handleNoUser();
       if (event === "SIGNED_IN" || event === "USER_UPDATED") {
         void loadForUser(user.id, user.email, (user.user_metadata as any)?.full_name);
       }
@@ -424,6 +378,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       sub.subscription.unsubscribe();
     };
   }, []);
+
 
   // Debounced persistence to Supabase whenever data changes.
   useEffect(() => {
@@ -460,7 +415,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   };
 
   const value: Store = useMemo(() => ({
-    medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed,
+    medicines, logs, caregivers, profile, prescriptions, appointments, alarmSettings, isAuthed, hydrated,
+
     waterLogs, sleepLogs, exerciseLogs, moodLogs, vault, refills, prefs, rewards,
     addMedicine: (m) => setMedicines((p) => [...p, { ...m, id: crypto.randomUUID() }]),
     updateMedicine: (id, m) => setMedicines((p) => p.map((x) => (x.id === id ? { ...x, ...m } : x))),

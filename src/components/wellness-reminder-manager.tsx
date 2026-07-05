@@ -28,11 +28,12 @@ function nowHHMM() {
 function todayISO() { return new Date().toISOString().slice(0, 10); }
 
 export function WellnessReminderManager() {
-  const { prefs, addWater, exerciseLogs, moodLogs } = useStore();
+  const { prefs, addWater, exerciseLogs, moodLogs, isAuthed } = useStore();
   const lastRef = useRef<LastFired>(loadLast());
 
   useEffect(() => {
-    if (!prefs.wellnessRemindersEnabled) return;
+    if (!isAuthed || !prefs.wellnessRemindersEnabled) return;
+
 
     const tick = () => {
       const last = lastRef.current;
@@ -113,7 +114,7 @@ export function WellnessReminderManager() {
     tick();
     const id = window.setInterval(tick, 30_000);
     return () => window.clearInterval(id);
-  }, [prefs, addWater, exerciseLogs, moodLogs]);
+  }, [isAuthed, prefs, addWater, exerciseLogs, moodLogs]);
 
   return null;
 }

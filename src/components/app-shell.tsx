@@ -144,11 +144,18 @@ function useOnline() {
 }
 
 export function AppShell({ children, title }: { children: ReactNode; title?: string }) {
-  const { profile, logout, prefs } = useStore();
+  const { profile, logout, prefs, isAuthed, hydrated } = useStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const online = useOnline();
+
+  useEffect(() => {
+    if (hydrated && !isAuthed) {
+      navigate({ to: "/login", replace: true });
+    }
+  }, [hydrated, isAuthed, navigate]);
+
 
   useEffect(() => {
     document.documentElement.classList.toggle("elderly-mode", !!prefs.elderlyMode);
@@ -185,7 +192,19 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
     </aside>
   );
 
+  if (!hydrated || !isAuthed) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-gradient-soft">
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          Loading…
+        </div>
+      </div>
+    );
+  }
+
   return (
+
     <div className="flex min-h-screen w-full bg-gradient-soft">
       <div className="hidden w-64 shrink-0 lg:block">{sidebar}</div>
       <div className="flex flex-1 flex-col">
