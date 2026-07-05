@@ -146,6 +146,8 @@ type Store = {
   appointments: Appointment[];
   alarmSettings: AlarmSettings;
   isAuthed: boolean;
+  hydrated: boolean;
+
   waterLogs: WaterLog[];
   sleepLogs: SleepLog[];
   exerciseLogs: ExerciseLog[];
