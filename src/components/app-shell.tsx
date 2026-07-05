@@ -144,11 +144,18 @@ function useOnline() {
 }
 
 export function AppShell({ children, title }: { children: ReactNode; title?: string }) {
-  const { profile, logout, prefs } = useStore();
+  const { profile, logout, prefs, isAuthed, hydrated } = useStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const online = useOnline();
+
+  useEffect(() => {
+    if (hydrated && !isAuthed) {
+      navigate({ to: "/login", replace: true });
+    }
+  }, [hydrated, isAuthed, navigate]);
+
 
   useEffect(() => {
     document.documentElement.classList.toggle("elderly-mode", !!prefs.elderlyMode);
