@@ -278,7 +278,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const loadingUidRef = useRef<string | null>(null);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Subscribe to Supabase auth state and load/seed the user's app_state row.
+  const resetState = () => {
+    setMedicines([]);
+    setLogs([]);
+    setCaregivers([]);
+    setProfile(emptyProfile);
+    setPrescriptions([]);
+    setAppointments([]);
+    setAlarmSettings(defaultAlarmSettings);
+    setWaterLogs([]);
+    setSleepLogs([]);
+    setExerciseLogs([]);
+    setMoodLogs([]);
+    setVault([]);
+    setRefills([]);
+    setPrefs(defaultPrefs);
+    setRewards(defaultRewards);
+  };
+
+  // Subscribe to Supabase auth state and load the user's app_state row.
   useEffect(() => {
     let mounted = true;
 
@@ -297,46 +315,33 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
         if (row?.data) {
           const s = row.data as any;
-          if (s.medicines) setMedicines(s.medicines);
-          if (s.logs) setLogs(s.logs);
-          if (s.caregivers) setCaregivers(s.caregivers);
-          if (s.profile) setProfile(s.profile);
-          if (s.prescriptions) setPrescriptions(s.prescriptions);
-          if (s.appointments) setAppointments(s.appointments);
-          if (s.alarmSettings) setAlarmSettings({ ...defaultAlarmSettings, ...s.alarmSettings });
-          if (s.waterLogs) setWaterLogs(s.waterLogs);
-          if (s.sleepLogs) setSleepLogs(s.sleepLogs);
-          if (s.exerciseLogs) setExerciseLogs(s.exerciseLogs);
-          if (s.moodLogs) setMoodLogs(s.moodLogs);
-          if (s.vault) setVault(s.vault);
-          if (s.refills) setRefills(s.refills);
-          if (s.prefs) setPrefs({ ...defaultPrefs, ...s.prefs });
-          if (s.rewards) setRewards({ ...defaultRewards, ...s.rewards });
+          setMedicines(s.medicines ?? []);
+          setLogs(s.logs ?? []);
+          setCaregivers(s.caregivers ?? []);
+          setProfile(s.profile ?? { ...emptyProfile, email: email ?? "", fullName: displayName ?? "" });
+          setPrescriptions(s.prescriptions ?? []);
+          setAppointments(s.appointments ?? []);
+          setAlarmSettings({ ...defaultAlarmSettings, ...(s.alarmSettings ?? {}) });
+          setWaterLogs(s.waterLogs ?? []);
+          setSleepLogs(s.sleepLogs ?? []);
+          setExerciseLogs(s.exerciseLogs ?? []);
+          setMoodLogs(s.moodLogs ?? []);
+          setVault(s.vault ?? []);
+          setRefills(s.refills ?? []);
+          setPrefs({ ...defaultPrefs, ...(s.prefs ?? {}) });
+          setRewards({ ...defaultRewards, ...(s.rewards ?? {}) });
         } else {
-          const seedProfile = {
-            ...defaultState.profile,
-            email: email ?? defaultState.profile.email,
-            fullName: displayName ?? defaultState.profile.fullName,
-          };
-          const seed = {
-            medicines: defaultState.medicines,
-            logs: defaultState.logs,
-            caregivers: defaultState.caregivers,
-            profile: seedProfile,
-            prescriptions: defaultState.prescriptions,
-            appointments: defaultState.appointments,
-            alarmSettings: defaultAlarmSettings,
-            waterLogs: defaultState.waterLogs,
-            sleepLogs: defaultState.sleepLogs,
-            exerciseLogs: defaultState.exerciseLogs,
-            moodLogs: defaultState.moodLogs,
-            vault: defaultState.vault,
-            refills: defaultState.refills,
-            prefs: defaultPrefs,
-            rewards: defaultRewards,
+          // Brand new user — empty state, only seed profile identity fields.
+          const seedProfile: Profile = {
+            ...emptyProfile,
+            email: email ?? "",
+            fullName: displayName ?? "",
           };
           if (mounted) setProfile(seedProfile);
-          await supabase.from("app_state").upsert({ user_id: userId, data: seed as any });
+          await supabase.from("app_state").upsert({
+            user_id: userId,
+            data: { profile: seedProfile, prefs: defaultPrefs, rewards: defaultRewards } as any,
+          });
         }
       } catch (err) {
         console.error("Failed to load user data", err);
@@ -346,29 +351,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }
     };
 
+    const handleNoUser = () => {
+      if (!mounted) return;
+      setUid(null);
+      setIsAuthed(false);
+      resetState();
+      setHydrated(true);
+    };
+
     supabase.auth.getSession().then(({ data }) => {
       const user = data.session?.user;
-      if (!user) {
-        if (mounted) {
-          setUid(null);
-          setIsAuthed(false);
-          setHydrated(true);
-        }
-        return;
-      }
+      if (!user) return handleNoUser();
       void loadForUser(user.id, user.email, (user.user_metadata as any)?.full_name);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       const user = session?.user;
-      if (!user) {
-        if (mounted) {
-          setUid(null);
-          setIsAuthed(false);
-          setHydrated(true);
-        }
-        return;
-      }
+      if (!user) return handleNoUser();
       if (event === "SIGNED_IN" || event === "USER_UPDATED") {
         void loadForUser(user.id, user.email, (user.user_metadata as any)?.full_name);
       }
@@ -379,6 +378,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       sub.subscription.unsubscribe();
     };
   }, []);
+
 
   // Debounced persistence to Supabase whenever data changes.
   useEffect(() => {
