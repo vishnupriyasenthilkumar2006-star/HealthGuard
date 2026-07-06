@@ -39,6 +39,7 @@ import { Route as FamilyRouteImport } from './routes/family'
 import { Route as ExerciseRouteImport } from './routes/exercise'
 import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as DoctorsRouteImport } from './routes/doctors'
+import { Route as DoctorRouteImport } from './routes/doctor'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConsultationsRouteImport } from './routes/consultations'
 import { Route as CaregiversRouteImport } from './routes/caregivers'
@@ -199,6 +200,11 @@ const DoctorsRoute = DoctorsRouteImport.update({
   path: '/doctors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DoctorRoute = DoctorRouteImport.update({
+  id: '/doctor',
+  path: '/doctor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -255,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/caregivers': typeof CaregiversRoute
   '/consultations': typeof ConsultationsRoute
   '/dashboard': typeof DashboardRoute
+  '/doctor': typeof DoctorRoute
   '/doctors': typeof DoctorsRoute
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
@@ -296,6 +303,7 @@ export interface FileRoutesByTo {
   '/caregivers': typeof CaregiversRoute
   '/consultations': typeof ConsultationsRoute
   '/dashboard': typeof DashboardRoute
+  '/doctor': typeof DoctorRoute
   '/doctors': typeof DoctorsRoute
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
@@ -338,6 +346,7 @@ export interface FileRoutesById {
   '/caregivers': typeof CaregiversRoute
   '/consultations': typeof ConsultationsRoute
   '/dashboard': typeof DashboardRoute
+  '/doctor': typeof DoctorRoute
   '/doctors': typeof DoctorsRoute
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
@@ -381,6 +390,7 @@ export interface FileRouteTypes {
     | '/caregivers'
     | '/consultations'
     | '/dashboard'
+    | '/doctor'
     | '/doctors'
     | '/emergency'
     | '/exercise'
@@ -422,6 +432,7 @@ export interface FileRouteTypes {
     | '/caregivers'
     | '/consultations'
     | '/dashboard'
+    | '/doctor'
     | '/doctors'
     | '/emergency'
     | '/exercise'
@@ -463,6 +474,7 @@ export interface FileRouteTypes {
     | '/caregivers'
     | '/consultations'
     | '/dashboard'
+    | '/doctor'
     | '/doctors'
     | '/emergency'
     | '/exercise'
@@ -505,6 +517,7 @@ export interface RootRouteChildren {
   CaregiversRoute: typeof CaregiversRoute
   ConsultationsRoute: typeof ConsultationsRoute
   DashboardRoute: typeof DashboardRoute
+  DoctorRoute: typeof DoctorRoute
   DoctorsRoute: typeof DoctorsRoute
   EmergencyRoute: typeof EmergencyRoute
   ExerciseRoute: typeof ExerciseRoute
@@ -749,6 +762,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DoctorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/doctor': {
+      id: '/doctor'
+      path: '/doctor'
+      fullPath: '/doctor'
+      preLoaderRoute: typeof DoctorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -825,6 +845,7 @@ const rootRouteChildren: RootRouteChildren = {
   CaregiversRoute: CaregiversRoute,
   ConsultationsRoute: ConsultationsRoute,
   DashboardRoute: DashboardRoute,
+  DoctorRoute: DoctorRoute,
   DoctorsRoute: DoctorsRoute,
   EmergencyRoute: EmergencyRoute,
   ExerciseRoute: ExerciseRoute,
