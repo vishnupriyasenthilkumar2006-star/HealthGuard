@@ -11,7 +11,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 function useNavGroups() {
   const { t } = useTranslation();
+  const { isDoctor, isAdmin } = useRoles();
+  const staffItems: Array<{ to: string; label: string; icon: typeof LayoutDashboard }> = [];
+  if (isDoctor) staffItems.push({ to: "/doctor", label: "Doctor Dashboard", icon: Stethoscope });
+  if (isAdmin) staffItems.push({ to: "/admin", label: "Admin Dashboard", icon: ShieldCheck });
   return [
+    ...(staffItems.length ? [{ label: "Staff", items: staffItems }] : []),
     {
       label: t("nav.overview"),
       items: [
