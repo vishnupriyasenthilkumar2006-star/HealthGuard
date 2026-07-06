@@ -13,6 +13,7 @@ import { Route as WellnessRouteImport } from './routes/wellness'
 import { Route as WaterRouteImport } from './routes/water'
 import { Route as VoiceRouteImport } from './routes/voice'
 import { Route as VaultRouteImport } from './routes/vault'
+import { Route as SymptomCheckerRouteImport } from './routes/symptom-checker'
 import { Route as StockRouteImport } from './routes/stock'
 import { Route as SleepRouteImport } from './routes/sleep'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -65,6 +66,11 @@ const VoiceRoute = VoiceRouteImport.update({
 const VaultRoute = VaultRouteImport.update({
   id: '/vault',
   path: '/vault',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SymptomCheckerRoute = SymptomCheckerRouteImport.update({
+  id: '/symptom-checker',
+  path: '/symptom-checker',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StockRoute = StockRouteImport.update({
@@ -267,6 +273,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/sleep': typeof SleepRoute
   '/stock': typeof StockRoute
+  '/symptom-checker': typeof SymptomCheckerRoute
   '/vault': typeof VaultRoute
   '/voice': typeof VoiceRoute
   '/water': typeof WaterRoute
@@ -306,6 +313,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/sleep': typeof SleepRoute
   '/stock': typeof StockRoute
+  '/symptom-checker': typeof SymptomCheckerRoute
   '/vault': typeof VaultRoute
   '/voice': typeof VoiceRoute
   '/water': typeof WaterRoute
@@ -346,6 +354,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/sleep': typeof SleepRoute
   '/stock': typeof StockRoute
+  '/symptom-checker': typeof SymptomCheckerRoute
   '/vault': typeof VaultRoute
   '/voice': typeof VoiceRoute
   '/water': typeof WaterRoute
@@ -387,6 +396,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sleep'
     | '/stock'
+    | '/symptom-checker'
     | '/vault'
     | '/voice'
     | '/water'
@@ -426,6 +436,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sleep'
     | '/stock'
+    | '/symptom-checker'
     | '/vault'
     | '/voice'
     | '/water'
@@ -465,6 +476,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sleep'
     | '/stock'
+    | '/symptom-checker'
     | '/vault'
     | '/voice'
     | '/water'
@@ -505,6 +517,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SleepRoute: typeof SleepRoute
   StockRoute: typeof StockRoute
+  SymptomCheckerRoute: typeof SymptomCheckerRoute
   VaultRoute: typeof VaultRoute
   VoiceRoute: typeof VoiceRoute
   WaterRoute: typeof WaterRoute
@@ -539,6 +552,13 @@ declare module '@tanstack/react-router' {
       path: '/vault'
       fullPath: '/vault'
       preLoaderRoute: typeof VaultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/symptom-checker': {
+      id: '/symptom-checker'
+      path: '/symptom-checker'
+      fullPath: '/symptom-checker'
+      preLoaderRoute: typeof SymptomCheckerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/stock': {
@@ -809,6 +829,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SleepRoute: SleepRoute,
   StockRoute: StockRoute,
+  SymptomCheckerRoute: SymptomCheckerRoute,
   VaultRoute: VaultRoute,
   VoiceRoute: VoiceRoute,
   WaterRoute: WaterRoute,

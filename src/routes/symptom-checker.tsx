@@ -62,7 +62,7 @@ function SymptomCheckerPage() {
         await supabase.from("symptom_history").insert({
           user_id: uid,
           symptoms: symptoms.trim(),
-          analysis: analysis as unknown as Record<string, unknown>,
+          analysis: analysis as never,
           severity: analysis.severity ?? null,
         });
         await loadHistory();
