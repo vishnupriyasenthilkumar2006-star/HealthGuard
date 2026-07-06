@@ -1,16 +1,22 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu, Package, FileText, Calendar, BarChart3, LifeBuoy, Settings, Droplets, Moon, Activity, Smile, Sparkles, Lock, Trophy, MapPin, Mic, Truck, Wifi, WifiOff, HeartPulse, Stethoscope, Video, IdCard, ShieldAlert, Landmark, Store, BellRing } from "lucide-react";
+import { LayoutDashboard, Pill, Bell, History, Users, User, LogOut, Heart, Menu, Package, FileText, Calendar, BarChart3, LifeBuoy, Settings, Droplets, Moon, Activity, Smile, Sparkles, Lock, Trophy, MapPin, Mic, Truck, Wifi, WifiOff, HeartPulse, Stethoscope, Video, IdCard, ShieldAlert, Landmark, Store, BellRing, Ambulance, ShieldCheck } from "lucide-react";
 import { useState, useEffect, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "@/lib/i18n";
 import { useStore } from "@/lib/store";
+import { useRoles } from "@/hooks/use-role";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 function useNavGroups() {
   const { t } = useTranslation();
+  const { isDoctor, isAdmin } = useRoles();
+  const staffItems: Array<{ to: string; label: string; icon: typeof LayoutDashboard }> = [];
+  if (isDoctor) staffItems.push({ to: "/doctor", label: "Doctor Dashboard", icon: Stethoscope });
+  if (isAdmin) staffItems.push({ to: "/admin", label: "Admin Dashboard", icon: ShieldCheck });
   return [
+    ...(staffItems.length ? [{ label: "Staff", items: staffItems }] : []),
     {
       label: t("nav.overview"),
       items: [
@@ -28,6 +34,7 @@ function useNavGroups() {
         { to: "/doctors", label: t("nav.doctors"), icon: Stethoscope },
         { to: "/appointments", label: t("nav.appointments"), icon: Calendar },
         { to: "/consultations", label: t("nav.consultations"), icon: Video },
+        { to: "/symptom-checker", label: "Symptom Checker", icon: Sparkles },
         { to: "/nearby", label: t("nav.nearby"), icon: MapPin },
       ],
     },
@@ -69,6 +76,7 @@ function useNavGroups() {
         { to: "/voice", label: t("nav.voice"), icon: Mic },
         { to: "/caregivers", label: t("nav.caregivers"), icon: Users },
         { to: "/emergency", label: t("nav.emergency"), icon: LifeBuoy },
+        { to: "/ambulance", label: "Ambulance", icon: Ambulance },
       ],
     },
     {

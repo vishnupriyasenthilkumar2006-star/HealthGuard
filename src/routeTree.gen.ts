@@ -13,6 +13,7 @@ import { Route as WellnessRouteImport } from './routes/wellness'
 import { Route as WaterRouteImport } from './routes/water'
 import { Route as VoiceRouteImport } from './routes/voice'
 import { Route as VaultRouteImport } from './routes/vault'
+import { Route as SymptomCheckerRouteImport } from './routes/symptom-checker'
 import { Route as StockRouteImport } from './routes/stock'
 import { Route as SleepRouteImport } from './routes/sleep'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -38,6 +39,7 @@ import { Route as FamilyRouteImport } from './routes/family'
 import { Route as ExerciseRouteImport } from './routes/exercise'
 import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as DoctorsRouteImport } from './routes/doctors'
+import { Route as DoctorRouteImport } from './routes/doctor'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConsultationsRouteImport } from './routes/consultations'
 import { Route as CaregiversRouteImport } from './routes/caregivers'
@@ -45,6 +47,8 @@ import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as AmbulanceRouteImport } from './routes/ambulance'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const WellnessRoute = WellnessRouteImport.update({
@@ -65,6 +69,11 @@ const VoiceRoute = VoiceRouteImport.update({
 const VaultRoute = VaultRouteImport.update({
   id: '/vault',
   path: '/vault',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SymptomCheckerRoute = SymptomCheckerRouteImport.update({
+  id: '/symptom-checker',
+  path: '/symptom-checker',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StockRoute = StockRouteImport.update({
@@ -192,6 +201,11 @@ const DoctorsRoute = DoctorsRouteImport.update({
   path: '/doctors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DoctorRoute = DoctorRouteImport.update({
+  id: '/doctor',
+  path: '/doctor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -227,6 +241,16 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AmbulanceRoute = AmbulanceRouteImport.update({
+  id: '/ambulance',
+  path: '/ambulance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -235,6 +259,8 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/ambulance': typeof AmbulanceRoute
   '/analytics': typeof AnalyticsRoute
   '/appointments': typeof AppointmentsRoute
   '/assistant': typeof AssistantRoute
@@ -242,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/caregivers': typeof CaregiversRoute
   '/consultations': typeof ConsultationsRoute
   '/dashboard': typeof DashboardRoute
+  '/doctor': typeof DoctorRoute
   '/doctors': typeof DoctorsRoute
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
@@ -267,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/sleep': typeof SleepRoute
   '/stock': typeof StockRoute
+  '/symptom-checker': typeof SymptomCheckerRoute
   '/vault': typeof VaultRoute
   '/voice': typeof VoiceRoute
   '/water': typeof WaterRoute
@@ -274,6 +302,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/ambulance': typeof AmbulanceRoute
   '/analytics': typeof AnalyticsRoute
   '/appointments': typeof AppointmentsRoute
   '/assistant': typeof AssistantRoute
@@ -281,6 +311,7 @@ export interface FileRoutesByTo {
   '/caregivers': typeof CaregiversRoute
   '/consultations': typeof ConsultationsRoute
   '/dashboard': typeof DashboardRoute
+  '/doctor': typeof DoctorRoute
   '/doctors': typeof DoctorsRoute
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
@@ -306,6 +337,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/sleep': typeof SleepRoute
   '/stock': typeof StockRoute
+  '/symptom-checker': typeof SymptomCheckerRoute
   '/vault': typeof VaultRoute
   '/voice': typeof VoiceRoute
   '/water': typeof WaterRoute
@@ -314,6 +346,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/ambulance': typeof AmbulanceRoute
   '/analytics': typeof AnalyticsRoute
   '/appointments': typeof AppointmentsRoute
   '/assistant': typeof AssistantRoute
@@ -321,6 +355,7 @@ export interface FileRoutesById {
   '/caregivers': typeof CaregiversRoute
   '/consultations': typeof ConsultationsRoute
   '/dashboard': typeof DashboardRoute
+  '/doctor': typeof DoctorRoute
   '/doctors': typeof DoctorsRoute
   '/emergency': typeof EmergencyRoute
   '/exercise': typeof ExerciseRoute
@@ -346,6 +381,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/sleep': typeof SleepRoute
   '/stock': typeof StockRoute
+  '/symptom-checker': typeof SymptomCheckerRoute
   '/vault': typeof VaultRoute
   '/voice': typeof VoiceRoute
   '/water': typeof WaterRoute
@@ -355,6 +391,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/ambulance'
     | '/analytics'
     | '/appointments'
     | '/assistant'
@@ -362,6 +400,7 @@ export interface FileRouteTypes {
     | '/caregivers'
     | '/consultations'
     | '/dashboard'
+    | '/doctor'
     | '/doctors'
     | '/emergency'
     | '/exercise'
@@ -387,6 +426,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sleep'
     | '/stock'
+    | '/symptom-checker'
     | '/vault'
     | '/voice'
     | '/water'
@@ -394,6 +434,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
+    | '/ambulance'
     | '/analytics'
     | '/appointments'
     | '/assistant'
@@ -401,6 +443,7 @@ export interface FileRouteTypes {
     | '/caregivers'
     | '/consultations'
     | '/dashboard'
+    | '/doctor'
     | '/doctors'
     | '/emergency'
     | '/exercise'
@@ -426,6 +469,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sleep'
     | '/stock'
+    | '/symptom-checker'
     | '/vault'
     | '/voice'
     | '/water'
@@ -433,6 +477,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
+    | '/ambulance'
     | '/analytics'
     | '/appointments'
     | '/assistant'
@@ -440,6 +486,7 @@ export interface FileRouteTypes {
     | '/caregivers'
     | '/consultations'
     | '/dashboard'
+    | '/doctor'
     | '/doctors'
     | '/emergency'
     | '/exercise'
@@ -465,6 +512,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sleep'
     | '/stock'
+    | '/symptom-checker'
     | '/vault'
     | '/voice'
     | '/water'
@@ -473,6 +521,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AmbulanceRoute: typeof AmbulanceRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AppointmentsRoute: typeof AppointmentsRoute
   AssistantRoute: typeof AssistantRoute
@@ -480,6 +530,7 @@ export interface RootRouteChildren {
   CaregiversRoute: typeof CaregiversRoute
   ConsultationsRoute: typeof ConsultationsRoute
   DashboardRoute: typeof DashboardRoute
+  DoctorRoute: typeof DoctorRoute
   DoctorsRoute: typeof DoctorsRoute
   EmergencyRoute: typeof EmergencyRoute
   ExerciseRoute: typeof ExerciseRoute
@@ -505,6 +556,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SleepRoute: typeof SleepRoute
   StockRoute: typeof StockRoute
+  SymptomCheckerRoute: typeof SymptomCheckerRoute
   VaultRoute: typeof VaultRoute
   VoiceRoute: typeof VoiceRoute
   WaterRoute: typeof WaterRoute
@@ -539,6 +591,13 @@ declare module '@tanstack/react-router' {
       path: '/vault'
       fullPath: '/vault'
       preLoaderRoute: typeof VaultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/symptom-checker': {
+      id: '/symptom-checker'
+      path: '/symptom-checker'
+      fullPath: '/symptom-checker'
+      preLoaderRoute: typeof SymptomCheckerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/stock': {
@@ -716,6 +775,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DoctorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/doctor': {
+      id: '/doctor'
+      path: '/doctor'
+      fullPath: '/doctor'
+      preLoaderRoute: typeof DoctorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -765,6 +831,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ambulance': {
+      id: '/ambulance'
+      path: '/ambulance'
+      fullPath: '/ambulance'
+      preLoaderRoute: typeof AmbulanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -777,6 +857,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AmbulanceRoute: AmbulanceRoute,
   AnalyticsRoute: AnalyticsRoute,
   AppointmentsRoute: AppointmentsRoute,
   AssistantRoute: AssistantRoute,
@@ -784,6 +866,7 @@ const rootRouteChildren: RootRouteChildren = {
   CaregiversRoute: CaregiversRoute,
   ConsultationsRoute: ConsultationsRoute,
   DashboardRoute: DashboardRoute,
+  DoctorRoute: DoctorRoute,
   DoctorsRoute: DoctorsRoute,
   EmergencyRoute: EmergencyRoute,
   ExerciseRoute: ExerciseRoute,
@@ -809,6 +892,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SleepRoute: SleepRoute,
   StockRoute: StockRoute,
+  SymptomCheckerRoute: SymptomCheckerRoute,
   VaultRoute: VaultRoute,
   VoiceRoute: VoiceRoute,
   WaterRoute: WaterRoute,
