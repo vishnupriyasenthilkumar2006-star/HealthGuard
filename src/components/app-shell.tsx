@@ -76,6 +76,7 @@ function useNavGroups() {
         { to: "/voice", label: t("nav.voice"), icon: Mic },
         { to: "/caregivers", label: t("nav.caregivers"), icon: Users },
         { to: "/emergency", label: t("nav.emergency"), icon: LifeBuoy },
+        { to: "/ambulance", label: "Ambulance", icon: Ambulance },
       ],
     },
     {
