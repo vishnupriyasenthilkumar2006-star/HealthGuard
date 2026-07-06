@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      ambulance_bookings: {
+        Row: {
+          address: string
+          created_at: string
+          emergency_type: string
+          id: string
+          notes: string | null
+          patient_name: string
+          phone: string
+          scheduled_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          emergency_type: string
+          id?: string
+          notes?: string | null
+          patient_name: string
+          phone: string
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          emergency_type?: string
+          id?: string
+          notes?: string | null
+          patient_name?: string
+          phone?: string
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      announcements: {
+        Row: {
+          audience: string
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audience?: string
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audience?: string
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       app_state: {
         Row: {
           data: Json
@@ -71,6 +143,7 @@ export type Database = {
           appointment_time: string
           created_at: string
           doctor: string
+          doctor_id: string | null
           id: string
           location: string | null
           mode: string | null
@@ -86,6 +159,7 @@ export type Database = {
           appointment_time: string
           created_at?: string
           doctor: string
+          doctor_id?: string | null
           id?: string
           location?: string | null
           mode?: string | null
@@ -101,6 +175,7 @@ export type Database = {
           appointment_time?: string
           created_at?: string
           doctor?: string
+          doctor_id?: string | null
           id?: string
           location?: string | null
           mode?: string | null
@@ -367,6 +442,54 @@ export type Database = {
         }
         Relationships: []
       }
+      symptom_history: {
+        Row: {
+          analysis: Json | null
+          created_at: string
+          id: string
+          severity: string | null
+          symptoms: string
+          user_id: string
+        }
+        Insert: {
+          analysis?: Json | null
+          created_at?: string
+          id?: string
+          severity?: string | null
+          symptoms: string
+          user_id: string
+        }
+        Update: {
+          analysis?: Json | null
+          created_at?: string
+          id?: string
+          severity?: string | null
+          symptoms?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       wellness_exercise: {
         Row: {
           id: string
@@ -474,10 +597,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "doctor" | "patient"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -604,6 +733,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "doctor", "patient"],
+    },
   },
 } as const
