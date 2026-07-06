@@ -34,6 +34,7 @@ function useNavGroups() {
         { to: "/doctors", label: t("nav.doctors"), icon: Stethoscope },
         { to: "/appointments", label: t("nav.appointments"), icon: Calendar },
         { to: "/consultations", label: t("nav.consultations"), icon: Video },
+        { to: "/symptom-checker", label: "Symptom Checker", icon: Sparkles },
         { to: "/nearby", label: t("nav.nearby"), icon: MapPin },
       ],
     },
