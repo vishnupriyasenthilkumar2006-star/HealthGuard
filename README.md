@@ -4,6 +4,11 @@ HealthGuard is a smart telemedicine and rural healthcare management system desig
 
 ---
 
+## 🌐 Live Demo
+
+🔗 https://healthguard-health.lovable.app
+
+
 ## 🚀 Features
 
 ### 👨‍⚕️ Patient Module
