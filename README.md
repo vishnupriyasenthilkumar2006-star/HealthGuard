@@ -69,3 +69,49 @@ HealthGuard is a smart telemedicine and rural healthcare management system desig
 - Supabase Authentication
 
 ---
+
+
+
+---
+
+# 📸 Screenshots
+
+## 🏠 Home Page
+
+![Home Page](home-page.png)
+
+---
+
+## 🔐 Login Page
+
+![Login Page](login-page.png)
+
+---
+
+## 👨‍⚕️ Patient Dashboard
+
+![Patient Dashboard](patient-dashboard.png)
+
+---
+
+## 🩺 Doctor Dashboard
+
+![Doctor Dashboard](doctor-dashboard.png)
+
+---
+
+## 📅 Appointment Booking
+
+![Appointment Booking](appointment-booking.png)
+
+---
+
+## 📋 Health Records
+
+![Health Records](health-records.png)
+
+---
+
+## 🚑 Emergency Support
+
+![Emergency Support](emergency-support.png)
